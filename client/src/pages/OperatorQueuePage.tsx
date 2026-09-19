@@ -1,0 +1,487 @@
+import React, { useState, useEffect, useCallback } from 'react';
+import { getOrdersQueue, updateOrderStatus, getQueueStats, getOrderByTokenOrId } from '../services/api';
+import type { Order, OrderStatus, QueueStats } from '../types';
+import { StatusBadge } from '../components/StatusBadge';
+import {
+  Search,
+  RefreshCw,
+  Clock,
+  Cpu,
+  CheckCircle2,
+  IndianRupee,
+  X,
+  FileText,
+  Layers,
+} from 'lucide-react';
+
+export const OperatorQueuePage: React.FC = () => {
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [stats, setStats] = useState<QueueStats | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Filters
+  const [activeTab, setActiveTab] = useState<string>('ALL');
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // Detail Drawer State
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
+
+  const loadData = useCallback(async (silent = false) => {
+    try {
+      if (!silent) setLoading(true);
+      setError(null);
+
+      const [queueData, statsData] = await Promise.all([
+        getOrdersQueue(activeTab, searchTerm),
+        getQueueStats(),
+      ]);
+
+      setOrders(queueData);
+      setStats(statsData);
+    } catch (err: any) {
+      setError(err.message || 'Failed to load operator queue');
+    } finally {
+      setLoading(false);
+    }
+  }, [activeTab, searchTerm]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+
+  // Auto-refresh queue every 5 seconds for live counter operation
+  useEffect(() => {
+    const timer = setInterval(() => {
+      loadData(true);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [loadData]);
+
+  const handleStatusAdvance = async (orderId: number, nextStatus: OrderStatus) => {
+    try {
+      setActionLoadingId(orderId);
+      await updateOrderStatus(orderId, nextStatus);
+
+      // Refresh list and if drawer is open for this order, refresh drawer
+      await loadData(true);
+      if (selectedOrder && selectedOrder.id === orderId) {
+        const refreshed = await getOrderByTokenOrId(String(orderId));
+        setSelectedOrder(refreshed);
+      }
+    } catch (err: any) {
+      alert(err.message || 'Failed to update order status');
+    } finally {
+      setActionLoadingId(null);
+    }
+  };
+
+  const handleOpenDrawer = async (order: Order) => {
+    try {
+      const fullOrder = await getOrderByTokenOrId(String(order.id));
+      setSelectedOrder(fullOrder);
+    } catch (err: any) {
+      alert(err.message || 'Failed to open order details');
+    }
+  };
+
+  const tabs = ['ALL', 'QUEUED', 'PROCESSING', 'READY', 'COMPLETED'];
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 text-left">
+      
+      {/* Header & Title */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+        <div>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-800 border border-zinc-700 text-zinc-300 text-xs font-mono mb-2">
+            <Layers className="w-3.5 h-3.5 text-sky-400" />
+            <span>Counter Operations POS</span>
+          </div>
+          <h1 className="text-3xl font-extrabold tracking-tight text-white font-mono">
+            Dispatcher Queue
+          </h1>
+          <p className="text-xs text-zinc-400 mt-1">
+            Real-time management of walk-in tokens, job statuses, and customer pickup dispatch.
+          </p>
+        </div>
+
+        <button
+          onClick={() => loadData(false)}
+          className="self-start sm:self-center inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 text-xs font-mono text-zinc-300 transition-colors"
+        >
+          <RefreshCw className="w-3.5 h-3.5 text-sky-400" />
+          <span>Sync Now</span>
+        </button>
+      </div>
+
+      {error && (
+        <div className="mb-6 p-4 rounded-xl bg-rose-950/60 border border-rose-800 text-rose-300 text-xs font-mono">
+          {error}
+        </div>
+      )}
+
+      {/* 4 Metric Stats Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        
+        <div className="p-4 rounded-xl bg-zinc-900/70 border border-zinc-800">
+          <div className="flex items-center justify-between text-zinc-400 mb-2">
+            <span className="text-xs font-mono uppercase">In Queue</span>
+            <Clock className="w-4 h-4 text-zinc-400" />
+          </div>
+          <div className="text-2xl sm:text-3xl font-extrabold font-mono text-white">
+            {stats ? stats.queued_count : '0'}
+          </div>
+          <span className="text-[11px] text-zinc-500 font-mono">Awaiting production</span>
+        </div>
+
+        <div className="p-4 rounded-xl bg-zinc-900/70 border border-zinc-800">
+          <div className="flex items-center justify-between text-amber-400 mb-2">
+            <span className="text-xs font-mono uppercase">Processing</span>
+            <Cpu className="w-4 h-4 animate-spin text-amber-400" />
+          </div>
+          <div className="text-2xl sm:text-3xl font-extrabold font-mono text-amber-300">
+            {stats ? stats.processing_count : '0'}
+          </div>
+          <span className="text-[11px] text-zinc-500 font-mono">Printing & binding</span>
+        </div>
+
+        <div className="p-4 rounded-xl bg-zinc-900/70 border border-zinc-800">
+          <div className="flex items-center justify-between text-emerald-400 mb-2">
+            <span className="text-xs font-mono uppercase">Ready for Pickup</span>
+            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+          </div>
+          <div className="text-2xl sm:text-3xl font-extrabold font-mono text-emerald-300">
+            {stats ? stats.ready_count : '0'}
+          </div>
+          <span className="text-[11px] text-zinc-500 font-mono">In collection tray</span>
+        </div>
+
+        <div className="p-4 rounded-xl bg-zinc-900/70 border border-zinc-800">
+          <div className="flex items-center justify-between text-sky-400 mb-2">
+            <span className="text-xs font-mono uppercase">Today's Revenue</span>
+            <IndianRupee className="w-4 h-4 text-sky-400" />
+          </div>
+          <div className="text-2xl sm:text-3xl font-extrabold font-mono text-white">
+            ₹{stats ? parseFloat(String(stats.today_revenue)).toFixed(2) : '0.00'}
+          </div>
+          <span className="text-[11px] text-zinc-500 font-mono">
+            {stats ? stats.completed_today_count : 0} orders settled
+          </span>
+        </div>
+
+      </div>
+
+      {/* Filter Tabs & Search Bar */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+        
+        {/* Status Pills */}
+        <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0">
+          {tabs.map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-all shrink-0 ${
+                activeTab === tab
+                  ? 'bg-zinc-100 text-zinc-950 font-bold shadow'
+                  : 'bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white'
+              }`}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+
+        {/* Search Box */}
+        <div className="relative w-full sm:w-72">
+          <Search className="w-4 h-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2" />
+          <input
+            type="text"
+            placeholder="Search token, name, phone..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-9 pr-3 py-1.5 rounded-lg bg-zinc-950 border border-zinc-800 text-xs font-mono text-white focus:outline-none focus:border-sky-500"
+          />
+        </div>
+
+      </div>
+
+      {/* High-Density Orders Table */}
+      <div className="bg-zinc-900/80 border border-zinc-800 rounded-2xl overflow-hidden shadow-xl">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs font-mono">
+            
+            <thead className="bg-zinc-950 border-b border-zinc-800 text-zinc-400 uppercase tracking-wider text-[11px]">
+              <tr>
+                <th className="py-3.5 px-4">Token ID</th>
+                <th className="py-3.5 px-4">Customer</th>
+                <th className="py-3.5 px-4">Summary</th>
+                <th className="py-3.5 px-4">Amount</th>
+                <th className="py-3.5 px-4">Status</th>
+                <th className="py-3.5 px-4">Created</th>
+                <th className="py-3.5 px-4 text-right">Quick Dispatch</th>
+              </tr>
+            </thead>
+
+            <tbody className="divide-y divide-zinc-800/60">
+              {loading && orders.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="py-12 text-center text-zinc-500 font-mono">
+                    <div className="w-6 h-6 border-2 border-sky-400 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+                    Loading queue orders...
+                  </td>
+                </tr>
+              ) : orders.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="py-12 text-center text-zinc-500 font-mono">
+                    No orders matching the filter '{activeTab}'.
+                  </td>
+                </tr>
+              ) : (
+                orders.map((order) => {
+                  const isBusy = actionLoadingId === order.id;
+
+                  return (
+                    <tr
+                      key={order.id}
+                      className="hover:bg-zinc-800/40 transition-colors cursor-pointer group"
+                      onClick={() => handleOpenDrawer(order)}
+                    >
+                      {/* Token */}
+                      <td className="py-3.5 px-4 font-bold text-white text-sm">
+                        <span className="group-hover:text-sky-400 transition-colors">
+                          {order.token_number}
+                        </span>
+                      </td>
+
+                      {/* Customer */}
+                      <td className="py-3.5 px-4">
+                        <div className="font-semibold text-zinc-200">{order.customer_name}</div>
+                        <div className="text-[11px] text-zinc-500">{order.customer_phone}</div>
+                      </td>
+
+                      {/* Summary */}
+                      <td className="py-3.5 px-4 text-zinc-400">
+                        <span>{order.item_count || 1} items</span>
+                        {order.file_count ? (
+                          <span className="ml-2 text-sky-400">({order.file_count} files)</span>
+                        ) : null}
+                      </td>
+
+                      {/* Amount */}
+                      <td className="py-3.5 px-4 font-bold text-zinc-200">
+                        ₹{parseFloat(String(order.total_amount)).toFixed(2)}
+                      </td>
+
+                      {/* Status Badge */}
+                      <td className="py-3.5 px-4">
+                        <StatusBadge status={order.status} size="sm" />
+                      </td>
+
+                      {/* Created Time */}
+                      <td className="py-3.5 px-4 text-zinc-500 text-[11px]">
+                        {new Date(order.created_at).toLocaleTimeString('en-IN', {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      </td>
+
+                      {/* Quick Action Button */}
+                      <td
+                        className="py-3.5 px-4 text-right"
+                        onClick={(e) => e.stopPropagation()} // Prevent opening drawer when clicking action button
+                      >
+                        {order.status === 'QUEUED' && (
+                          <button
+                            onClick={() => handleStatusAdvance(order.id, 'PROCESSING')}
+                            disabled={isBusy}
+                            className="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold text-xs transition-colors"
+                          >
+                            Start Printing
+                          </button>
+                        )}
+
+                        {order.status === 'PROCESSING' && (
+                          <button
+                            onClick={() => handleStatusAdvance(order.id, 'READY')}
+                            disabled={isBusy}
+                            className="px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold text-xs transition-colors"
+                          >
+                            Mark Ready
+                          </button>
+                        )}
+
+                        {order.status === 'READY' && (
+                          <button
+                            onClick={() => handleStatusAdvance(order.id, 'COMPLETED')}
+                            disabled={isBusy}
+                            className="px-3 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs transition-colors"
+                          >
+                            Complete & Paid
+                          </button>
+                        )}
+
+                        {order.status === 'COMPLETED' && (
+                          <span className="text-[11px] text-zinc-600 uppercase">Settled</span>
+                        )}
+
+                        {order.status === 'CANCELLED' && (
+                          <span className="text-[11px] text-rose-500 uppercase">Cancelled</span>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+
+          </table>
+        </div>
+      </div>
+
+      {/* Slide-Over Inspection Drawer */}
+      {selectedOrder && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex justify-end">
+          <div className="w-full max-w-lg bg-zinc-900 border-l border-zinc-800 h-full p-6 sm:p-8 overflow-y-auto shadow-2xl flex flex-col justify-between text-left">
+            
+            <div>
+              {/* Drawer Top Header */}
+              <div className="flex items-center justify-between pb-4 border-b border-zinc-800 mb-6">
+                <div>
+                  <span className="text-[10px] font-mono uppercase text-zinc-500">Inspection Drawer</span>
+                  <h2 className="text-2xl font-extrabold font-mono text-white">
+                    {selectedOrder.token_number}
+                  </h2>
+                </div>
+                <button
+                  onClick={() => setSelectedOrder(null)}
+                  className="p-2 rounded-lg bg-zinc-800 text-zinc-400 hover:text-white transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Customer Info */}
+              <div className="space-y-3 mb-6 p-4 rounded-xl bg-zinc-950/60 border border-zinc-800 text-xs font-mono">
+                <div className="flex items-center justify-between">
+                  <span className="text-zinc-500">Customer</span>
+                  <span className="font-semibold text-zinc-200">{selectedOrder.customer_name}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-zinc-500">Contact</span>
+                  <span className="font-semibold text-sky-400">{selectedOrder.customer_phone}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-zinc-500">Current Status</span>
+                  <StatusBadge status={selectedOrder.status} size="sm" />
+                </div>
+              </div>
+
+              {/* Line Items */}
+              <div className="mb-6">
+                <h3 className="text-xs uppercase font-mono tracking-wider text-zinc-400 font-bold mb-3">
+                  Job Specifications
+                </h3>
+                <div className="divide-y divide-zinc-800 rounded-xl bg-zinc-950/40 border border-zinc-800 p-3 text-xs font-mono">
+                  {selectedOrder.items?.map((item, idx) => (
+                    <div key={idx} className="py-2 flex justify-between items-center">
+                      <div>
+                        <span className="font-semibold text-zinc-200 block">{item.service_name}</span>
+                        <span className="text-zinc-500 text-[11px]">
+                          {item.quantity} units @ ₹{parseFloat(String(item.unit_price)).toFixed(2)}
+                        </span>
+                      </div>
+                      <span className="font-bold text-zinc-200">
+                        ₹{parseFloat(String(item.subtotal)).toFixed(2)}
+                      </span>
+                    </div>
+                  ))}
+                  <div className="pt-3 flex justify-between items-baseline font-bold">
+                    <span className="text-zinc-400 uppercase text-xs">Total</span>
+                    <span className="text-emerald-400 text-base">
+                      ₹{parseFloat(String(selectedOrder.total_amount)).toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Files */}
+              {selectedOrder.files && selectedOrder.files.length > 0 && (
+                <div className="mb-6">
+                  <h3 className="text-xs uppercase font-mono tracking-wider text-zinc-400 font-bold mb-3">
+                    Attached Files ({selectedOrder.files.length})
+                  </h3>
+                  <div className="space-y-2">
+                    {selectedOrder.files.map((f, idx) => (
+                      <div
+                        key={idx}
+                        className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 flex items-center justify-between text-xs font-mono"
+                      >
+                        <div className="flex items-center gap-2 truncate">
+                          <FileText className="w-4 h-4 text-sky-400 shrink-0" />
+                          <span className="truncate text-zinc-300">{f.file_name}</span>
+                        </div>
+                        <span className="text-[11px] text-zinc-500 shrink-0 ml-2">
+                          {f.page_count} pages
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Notes */}
+              {selectedOrder.notes && (
+                <div className="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800 text-xs mb-6">
+                  <span className="font-mono text-zinc-400 uppercase font-semibold block mb-1">
+                    Special Customer Notes:
+                  </span>
+                  <p className="text-zinc-300 italic">{selectedOrder.notes}</p>
+                </div>
+              )}
+            </div>
+
+            {/* Bottom Action Footer */}
+            <div className="pt-4 border-t border-zinc-800 flex flex-col gap-2">
+              {selectedOrder.status === 'QUEUED' && (
+                <button
+                  onClick={() => handleStatusAdvance(selectedOrder.id, 'PROCESSING')}
+                  className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 font-mono font-bold text-xs transition-colors"
+                >
+                  Start Processing Job
+                </button>
+              )}
+
+              {selectedOrder.status === 'PROCESSING' && (
+                <button
+                  onClick={() => handleStatusAdvance(selectedOrder.id, 'READY')}
+                  className="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-mono font-bold text-xs transition-colors"
+                >
+                  Mark Ready for Pickup
+                </button>
+              )}
+
+              {selectedOrder.status === 'READY' && (
+                <button
+                  onClick={() => handleStatusAdvance(selectedOrder.id, 'COMPLETED')}
+                  className="w-full py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-mono font-bold text-xs transition-colors"
+                >
+                  Mark Collected & Settled
+                </button>
+              )}
+
+              <button
+                onClick={() => setSelectedOrder(null)}
+                className="w-full py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-mono text-xs transition-colors"
+              >
+                Close Drawer
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+};

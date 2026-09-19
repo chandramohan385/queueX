@@ -1,0 +1,29 @@
+﻿{
+  "name": "queuex",
+  "version": "1.0.0",
+  "description": "QueueX - Smart Service & Order Management Platform",
+  "scripts": {
+    "dev:server": "npm run dev --prefix server",
+    "dev:client": "npm run dev --prefix client",
+    "dev": "npx concurrently -n \"SERVER,CLIENT\" -c \"bgBlue.bold,bgMagenta.bold\" \"npm run dev:server\" \"npm run dev:client\"",
+    "build:server": "npm run build --prefix server",
+    "build:client": "npm run build --prefix client",
+    "build": "npm run build:server && npm run build:client",
+    "db:migrate": "npm run db:migrate --prefix server"
+  },
+  "keywords": [
+    "saas",
+    "queue-management",
+    "pos",
+    "react",
+    "typescript",
+    "express",
+    "postgresql",
+    "supabase"
+  ],
+  "author": "Avuram Chandra Mohan Reddy",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

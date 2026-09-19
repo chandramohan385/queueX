@@ -1,0 +1,55 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+:root {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  background-color: #090d16;
+  color: #f1f5f9;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Industrial Ticket Notches */
+.ticket-notch-left {
+  position: absolute;
+  left: -12px;
+  width: 24px;
+  height: 24px;
+  border-radius: 9999px;
+  background-color: #090d16;
+}
+
+.ticket-notch-right {
+  position: absolute;
+  right: -12px;
+  width: 24px;
+  height: 24px;
+  border-radius: 9999px;
+  background-color: #090d16;
+}
+
+/* Barcode simulation pattern */
+.barcode-pattern {
+  background: repeating-linear-gradient(
+    90deg,
+    #94a3b8 0px,
+    #94a3b8 2px,
+    transparent 2px,
+    transparent 5px,
+    #94a3b8 5px,
+    #94a3b8 9px,
+    transparent 9px,
+    transparent 12px,
+    #94a3b8 12px,
+    #94a3b8 13px
+  );
+}
