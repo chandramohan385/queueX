@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { getOrdersQueue, updateOrderStatus, getQueueStats, getOrderByTokenOrId, getAuthToken } from '../services/api';
 import type { Order, OrderStatus, QueueStats } from '../types';
 import { StatusBadge } from '../components/StatusBadge';
+import { generateThermalReceipt } from '../utils/receiptGenerator';
 import {
   Search,
   RefreshCw,
@@ -13,6 +14,7 @@ import {
   FileText,
   Layers,
   Zap,
+  Printer,
 } from 'lucide-react';
 
 export const OperatorQueuePage: React.FC = () => {
@@ -516,6 +518,15 @@ export const OperatorQueuePage: React.FC = () => {
                   Mark Collected & Settled
                 </button>
               )}
+
+              <button
+                type="button"
+                onClick={() => generateThermalReceipt(selectedOrder)}
+                className="w-full py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs transition-colors shadow-xs flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <Printer className="w-4 h-4 text-sky-600" />
+                <span>Print 80mm Counter Slip</span>
+              </button>
 
               <button
                 onClick={() => setSelectedOrder(null)}

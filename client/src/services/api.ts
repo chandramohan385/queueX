@@ -149,3 +149,68 @@ export async function getQueueStats(): Promise<QueueStats> {
   if (!data.success) throw new Error(data.message || 'Failed to fetch stats');
   return data.data;
 }
+
+// ==================== RAZORPAY PAYMENTS ====================
+
+export interface PaymentOrderResponse {
+  success: boolean;
+  order_id: number;
+  token_number: string;
+  customer_name: string;
+  customer_phone: string;
+  razorpay_order_id: string;
+  amount: number;
+  amount_paise: number;
+  currency: string;
+  key_id: string;
+}
+
+export async function createPaymentOrder(orderId: number): Promise<PaymentOrderResponse> {
+  const res = await fetch(`${API_BASE}/payments/create-order`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ order_id: orderId }),
+  });
+  const data = await res.json();
+  if (!res.ok || !data.success) {
+    throw new Error(data.message || 'Failed to initiate payment');
+  }
+  return data;
+}
+
+export async function verifyPayment(payload: {
+  order_id: number;
+  razorpay_order_id: string;
+  razorpay_payment_id: string;
+  razorpay_signature: string;
+}): Promise<Order> {
+  const res = await fetch(`${API_BASE}/payments/verify`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json();
+  if (!res.ok || !data.success) {
+    throw new Error(data.message || 'Payment verification failed');
+  }
+  return data.data;
+}
+
+export async function simulateRazorpayPayment(razorpayOrderId: string): Promise<{
+  razorpay_order_id: string;
+  razorpay_payment_id: string;
+  razorpay_signature: string;
+}> {
+  const res = await fetch(`${API_BASE}/payments/simulate-signature`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ razorpay_order_id: razorpayOrderId }),
+  });
+  const data = await res.json();
+  if (!res.ok || !data.success) {
+    throw new Error(data.message || 'Failed to simulate payment signature');
+  }
+  return data;
+}
+
+
