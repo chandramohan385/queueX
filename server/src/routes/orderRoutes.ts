@@ -287,6 +287,92 @@ router.get('/', requireAuth, async (req: Request, res: Response): Promise<void> 
 });
 
 /**
+ * GET /api/orders/customer/:phone
+ * Public endpoint: Fetches all orders placed by a specific customer phone number within the last 30 days (1 month default).
+ */
+router.get('/customer/:phone', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { phone } = req.params;
+    const { days } = req.query;
+
+    if (!phone || phone.trim().length < 5) {
+      res.status(400).json({ success: false, message: 'Valid phone number is required' });
+      return;
+    }
+
+    const cleanPhone = phone.trim();
+    // Default to 30 days (1 month)
+    const dayLimit = days && !isNaN(Number(days)) ? Number(days) : 30;
+
+    const ordersRes = await pool.query(
+      `SELECT 
+        o.id,
+        o.token_number,
+        o.customer_name,
+        o.customer_phone,
+        o.status,
+        o.total_amount,
+        o.payment_status,
+        o.notes,
+        o.created_at,
+        o.updated_at,
+        COUNT(DISTINCT oi.id) as item_count,
+        COUNT(DISTINCT of.id) as file_count,
+        COALESCE(
+          json_agg(
+            DISTINCT jsonb_build_object(
+              'id', oi.id,
+              'service_id', oi.service_id,
+              'service_name', s.name,
+              'quantity', oi.quantity,
+              'unit_price', oi.unit_price,
+              'subtotal', oi.subtotal
+            )
+          ) FILTER (WHERE oi.id IS NOT NULL),
+          '[]'
+        ) as items,
+        COALESCE(
+          json_agg(
+            DISTINCT jsonb_build_object(
+              'id', of.id,
+              'file_name', of.file_name,
+              'page_count', of.page_count
+            )
+          ) FILTER (WHERE of.id IS NOT NULL),
+          '[]'
+        ) as files
+      FROM orders o
+      LEFT JOIN order_items oi ON oi.order_id = o.id
+      LEFT JOIN services s ON s.id = oi.service_id
+      LEFT JOIN order_files of ON of.order_id = o.id
+      WHERE (o.customer_phone = $1 OR o.customer_phone LIKE '%' || $1 || '%')
+        AND o.created_at >= NOW() - ($2 || ' days')::INTERVAL
+      GROUP BY o.id
+      ORDER BY 
+        CASE o.status
+          WHEN 'READY' THEN 1
+          WHEN 'PROCESSING' THEN 2
+          WHEN 'QUEUED' THEN 3
+          WHEN 'COMPLETED' THEN 4
+          WHEN 'CANCELLED' THEN 5
+        END ASC,
+        o.created_at DESC`,
+      [cleanPhone, dayLimit]
+    );
+
+    res.status(200).json({
+      success: true,
+      filter: { phone: cleanPhone, days: dayLimit },
+      count: ordersRes.rows.length,
+      data: ordersRes.rows,
+    });
+  } catch (error: any) {
+    console.error('Error fetching customer orders:', error);
+    res.status(500).json({ success: false, message: 'Failed to fetch customer orders' });
+  }
+});
+
+/**
  * GET /api/orders/:tokenOrId
  * Customer Ticket Tracking & Order Detail View.
  * Matches either by numerical ID or token string (e.g. PX-001).

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Layers, Search, LayoutDashboard, PlusCircle, LogOut, User, Lock } from 'lucide-react';
+import { Layers, Clock, LayoutDashboard, PlusCircle, LogOut, User, Lock } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export const Navbar: React.FC = () => {
@@ -9,7 +9,7 @@ export const Navbar: React.FC = () => {
 
   const navItems = [
     { label: 'Create Order', path: '/', icon: PlusCircle },
-    { label: 'Track Ticket', path: '/track', icon: Search },
+    { label: 'My Orders', path: '/my-orders', icon: Clock },
     {
       label: 'Operator POS',
       path: '/admin',

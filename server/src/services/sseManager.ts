@@ -12,6 +12,9 @@ class SSEManager {
   // Active customer ticket streams: tokenOrId -> Map<clientId, Response>
   private tokenClients: Map<string, Map<string, Response>> = new Map();
 
+  // Active customer phone streams: phone -> Map<clientId, Response>
+  private customerPhoneClients: Map<string, Map<string, Response>> = new Map();
+
   private heartbeatInterval: NodeJS.Timeout | null = null;
 
   constructor() {
@@ -34,8 +37,19 @@ class SSEManager {
         }
       });
 
-      // Ping customers
+      // Ping token customers
       this.tokenClients.forEach((clients) => {
+        clients.forEach((res) => {
+          try {
+            res.write(pingMessage);
+          } catch {
+            // Socket closed
+          }
+        });
+      });
+
+      // Ping phone customers
+      this.customerPhoneClients.forEach((clients) => {
         clients.forEach((res) => {
           try {
             res.write(pingMessage);
@@ -103,19 +117,61 @@ class SSEManager {
   }
 
   /**
+   * Register a Customer Phone stream for My Orders screen
+   */
+  addCustomerPhoneClient(phone: string, clientId: string, res: Response): void {
+    this.setupSSEHeaders(res);
+    const key = phone.trim();
+
+    if (!this.customerPhoneClients.has(key)) {
+      this.customerPhoneClients.set(key, new Map());
+    }
+
+    this.customerPhoneClients.get(key)!.set(clientId, res);
+
+    this.sendEvent(res, 'CONNECTED', {
+      message: `Live telemetry connected for customer phone ${key}`,
+      phone: key,
+    });
+  }
+
+  /**
+   * Remove a Customer Phone stream on disconnect
+   */
+  removeCustomerPhoneClient(phone: string, clientId: string): void {
+    const key = phone.trim();
+    const clients = this.customerPhoneClients.get(key);
+    if (clients) {
+      clients.delete(clientId);
+      if (clients.size === 0) {
+        this.customerPhoneClients.delete(key);
+      }
+    }
+  }
+
+  /**
    * Broadcast when a new order is created:
    * Alert all operators so the order pops onto their POS queue immediately!
+   * Also alert customer's phone stream if active.
    */
   broadcastOrderCreated(order: any): void {
     this.operatorClients.forEach((res) => {
       this.sendEvent(res, 'ORDER_CREATED', order);
     });
+
+    const phoneKey = String(order.customer_phone || '').trim();
+    if (phoneKey && this.customerPhoneClients.has(phoneKey)) {
+      this.customerPhoneClients.get(phoneKey)!.forEach((res) => {
+        this.sendEvent(res, 'ORDER_CREATED', order);
+      });
+    }
   }
 
   /**
    * Broadcast when an order's status advances:
    * 1. Updates all Operator dashboards
    * 2. Updates the specific Customer viewing that digital ticket
+   * 3. Updates Customer My Orders dashboard for that phone number
    */
   broadcastStatusChanged(order: any): void {
     // 1. Alert operators
@@ -139,6 +195,14 @@ class SSEManager {
     targetSubscribers.forEach((res) => {
       this.sendEvent(res, 'STATUS_CHANGED', order);
     });
+
+    // 3. Alert customer phone subscribers in My Orders
+    const phoneKey = String(order.customer_phone || '').trim();
+    if (phoneKey && this.customerPhoneClients.has(phoneKey)) {
+      this.customerPhoneClients.get(phoneKey)!.forEach((res) => {
+        this.sendEvent(res, 'STATUS_CHANGED', order);
+      });
+    }
   }
 
   /**

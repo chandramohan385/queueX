@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getServices, createOrder } from '../services/api';
 import type { Service } from '../types';
@@ -12,9 +12,9 @@ export const CustomerOrderPage: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Form State
-  const [customerName, setCustomerName] = useState('');
-  const [customerPhone, setCustomerPhone] = useState('');
+  // Form State - pre-filled from local storage if previously used
+  const [customerName, setCustomerName] = useState(() => localStorage.getItem('queuex_customer_name') || '');
+  const [customerPhone, setCustomerPhone] = useState(() => localStorage.getItem('queuex_customer_phone') || '');
   const [notes, setNotes] = useState('');
   const [selectedItems, setSelectedItems] = useState<Record<number, number>>({});
   
@@ -114,7 +114,9 @@ export const CustomerOrderPage: React.FC = () => {
       };
 
       const createdOrder = await createOrder(payload);
-      navigate(`/track/${createdOrder.token_number}`);
+      localStorage.setItem('queuex_customer_phone', customerPhone.trim());
+      localStorage.setItem('queuex_customer_name', customerName.trim());
+      navigate(`/my-orders?token=${encodeURIComponent(createdOrder.token_number)}`);
     } catch (err: any) {
       setError(err.message || 'Failed to submit order');
       setSubmitting(false);

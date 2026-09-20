@@ -1,23 +1,20 @@
-import React, { useState } from 'react';
-import { FileText, CheckCircle2, Clock, Cpu, User, Phone, Calendar, Printer, CreditCard } from 'lucide-react';
+import React from 'react';
+import { FileText, CheckCircle2, Clock, Cpu, User, Phone, Calendar, Printer } from 'lucide-react';
 import type { Order } from '../types';
 import { StatusBadge } from './StatusBadge';
 import { generateThermalReceipt } from '../utils/receiptGenerator';
-import { RazorpayModal } from './RazorpayModal';
 
 interface DigitalTicketStubProps {
   order: Order;
   onOrderUpdated?: (order: Order) => void;
 }
 
-export const DigitalTicketStub: React.FC<DigitalTicketStubProps> = ({ order, onOrderUpdated }) => {
-  const [showPaymentModal, setShowPaymentModal] = useState(false);
-
+export const DigitalTicketStub: React.FC<DigitalTicketStubProps> = ({ order }) => {
   const steps = [
     { key: 'QUEUED', label: 'Ticket Issued', desc: 'Order logged at counter', icon: Clock },
     { key: 'PROCESSING', label: 'In Production', desc: 'Printing & finishing job', icon: Cpu },
     { key: 'READY', label: 'Ready for Pickup', desc: 'Waiting at pickup shelf', icon: CheckCircle2 },
-    { key: 'COMPLETED', label: 'Collected', desc: 'Payment settled & closed', icon: Printer },
+    { key: 'COMPLETED', label: 'Collected', desc: 'Job settled & completed', icon: Printer },
   ];
 
   const getStepIndex = (status: string) => {
@@ -71,7 +68,7 @@ export const DigitalTicketStub: React.FC<DigitalTicketStubProps> = ({ order, onO
               </h1>
             </div>
             
-            {/* Amount & Payment Status Action */}
+            {/* Amount & Payment Status */}
             <div className="text-left sm:text-right">
               <span className="text-xs uppercase text-slate-400 font-bold tracking-wider">Estimated Total</span>
               <div className="text-2xl sm:text-3xl font-extrabold text-emerald-600">
@@ -82,17 +79,13 @@ export const DigitalTicketStub: React.FC<DigitalTicketStubProps> = ({ order, onO
                 {isPaid ? (
                   <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-800 text-[11px] font-bold">
                     <CheckCircle2 className="w-3 h-3 text-emerald-700" />
-                    <span>PAID - VERIFIED</span>
+                    <span>PAID</span>
                   </span>
                 ) : (
-                  <button
-                    type="button"
-                    onClick={() => setShowPaymentModal(true)}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] text-white text-xs font-bold shadow-xs transition-all cursor-pointer"
-                  >
-                    <CreditCard className="w-3.5 h-3.5" />
-                    <span>Pay with Razorpay</span>
-                  </button>
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-[11px] font-semibold">
+                    <Clock className="w-3 h-3 text-amber-600" />
+                    <span>Pay at Counter</span>
+                  </span>
                 )}
               </div>
             </div>
@@ -268,19 +261,6 @@ export const DigitalTicketStub: React.FC<DigitalTicketStubProps> = ({ order, onO
 
         </div>
       </div>
-
-      {/* Razorpay Interactive Checkout Modal */}
-      <RazorpayModal
-        isOpen={showPaymentModal}
-        orderId={order.id}
-        tokenNumber={order.token_number}
-        amount={parseFloat(String(order.total_amount))}
-        customerName={order.customer_name}
-        onClose={() => setShowPaymentModal(false)}
-        onSuccess={(updated) => {
-          if (onOrderUpdated) onOrderUpdated(updated);
-        }}
-      />
 
     </div>
   );

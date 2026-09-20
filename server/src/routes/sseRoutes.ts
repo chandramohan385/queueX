@@ -65,4 +65,24 @@ router.get('/orders/:tokenOrId', (req: Request, res: Response): void => {
   });
 });
 
+/**
+ * GET /api/events/customer/:phone
+ * Public SSE stream for customer's My Orders page.
+ * Streams real-time updates whenever any of their active print jobs change status.
+ */
+router.get('/customer/:phone', (req: Request, res: Response): void => {
+  const { phone } = req.params;
+  if (!phone || phone.trim().length < 5) {
+    res.status(400).json({ success: false, message: 'Valid phone number is required' });
+    return;
+  }
+
+  const clientId = crypto.randomUUID();
+  sseManager.addCustomerPhoneClient(phone, clientId, res);
+
+  req.on('close', () => {
+    sseManager.removeCustomerPhoneClient(phone, clientId);
+  });
+});
+
 export default router;

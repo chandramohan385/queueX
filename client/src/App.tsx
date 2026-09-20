@@ -1,10 +1,10 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { Navbar } from './components/Navbar';
 import { CustomerOrderPage } from './pages/CustomerOrderPage';
-import { CustomerTrackPage } from './pages/CustomerTrackPage';
+import { CustomerOrdersPage } from './pages/CustomerOrdersPage';
 import { OperatorQueuePage } from './pages/OperatorQueuePage';
 import { LoginPage } from './pages/LoginPage';
 
@@ -22,8 +22,9 @@ export const App: React.FC = () => {
             <Routes>
               {/* Public Customer Routes */}
               <Route path="/" element={<CustomerOrderPage />} />
-              <Route path="/track" element={<CustomerTrackPage />} />
-              <Route path="/track/:token" element={<CustomerTrackPage />} />
+              <Route path="/my-orders" element={<CustomerOrdersPage />} />
+              <Route path="/track" element={<Navigate to="/my-orders" replace />} />
+              <Route path="/track/:token" element={<Navigate to="/my-orders" replace />} />
               
               {/* Staff Authentication */}
               <Route path="/login" element={<LoginPage />} />

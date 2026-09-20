@@ -153,7 +153,7 @@ export function generateThermalReceipt(order: Order): void {
     doc.setFontSize(7.5);
     doc.setTextColor(21, 128, 61);
     doc.setFont('helvetica', 'bold');
-    const stampText = 'PAID - ONLINE RAZORPAY VERIFIED';
+    const stampText = 'PAID IN FULL';
     doc.text(stampText, (pageWidth - doc.getTextWidth(stampText)) / 2, y + 4.8);
     doc.setTextColor(0, 0, 0);
     y += 10;
