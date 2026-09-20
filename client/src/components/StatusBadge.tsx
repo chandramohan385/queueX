@@ -66,7 +66,7 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, size = 'md', s
 
   return (
     <span
-      className={`inline-flex items-center rounded-full border font-mono uppercase tracking-wider ${config.bgColor} ${sizeClasses}`}
+      className={`inline-flex items-center rounded-full border uppercase tracking-wider font-semibold ${config.bgColor} ${sizeClasses}`}
     >
       {showPulse && (
         <span className="relative flex h-2 w-2 mr-1.5">

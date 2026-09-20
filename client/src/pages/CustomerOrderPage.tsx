@@ -125,7 +125,7 @@ export const CustomerOrderPage: React.FC = () => {
     return (
       <div className="py-24 text-center">
         <div className="w-8 h-8 border-2 border-sky-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-        <p className="font-mono text-xs text-slate-500">Connecting to QueueX Service Catalog...</p>
+        <p className="text-xs text-slate-500">Connecting to QueueX Service Catalog...</p>
       </div>
     );
   }
@@ -135,7 +135,7 @@ export const CustomerOrderPage: React.FC = () => {
       
       {/* Hero Intro */}
       <div className="text-left mb-8">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-50 border border-sky-200 text-sky-700 text-xs font-mono mb-3 font-semibold">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-50 border border-sky-200 text-sky-700 text-xs mb-3 font-semibold">
           <Sparkles className="w-3.5 h-3.5 text-sky-600" />
           <span>Walk-In & Remote Counter Desk</span>
         </div>
@@ -148,7 +148,7 @@ export const CustomerOrderPage: React.FC = () => {
       </div>
 
       {error && (
-        <div className="mb-6 p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-mono flex items-center gap-3">
+        <div className="mb-6 p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center gap-3">
           <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
           <span>{error}</span>
         </div>
@@ -166,9 +166,9 @@ export const CustomerOrderPage: React.FC = () => {
                 key={cat}
                 type="button"
                 onClick={() => setCategoryFilter(cat)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-all shrink-0 ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all shrink-0 ${
                   categoryFilter === cat
-                    ? 'bg-slate-900 text-white shadow-xs'
+                    ? 'bg-slate-900 text-white shadow-xs font-semibold'
                     : 'bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                 }`}
               >
@@ -194,10 +194,10 @@ export const CustomerOrderPage: React.FC = () => {
                 >
                   <div>
                     <div className="flex items-start justify-between gap-2 mb-1">
-                      <span className="text-xs font-mono uppercase text-sky-700 font-bold tracking-wider">
+                      <span className="text-xs uppercase text-sky-700 font-bold tracking-wider">
                         {service.category}
                       </span>
-                      <span className="text-xs font-mono font-bold text-slate-900">
+                      <span className="text-xs font-bold text-slate-900">
                         ₹{parseFloat(String(service.base_price)).toFixed(2)}
                         <span className="text-slate-500 text-[10px] font-normal"> /{service.unit.replace('per_', '')}</span>
                       </span>
@@ -211,7 +211,7 @@ export const CustomerOrderPage: React.FC = () => {
 
                   {/* Quantity Stepper */}
                   <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                    <span className="text-xs font-mono text-slate-500 font-medium">Quantity</span>
+                    <span className="text-xs text-slate-500 font-medium">Quantity</span>
                     <div className="flex items-center gap-2">
                       {qty > 0 && (
                         <button
@@ -223,7 +223,7 @@ export const CustomerOrderPage: React.FC = () => {
                         </button>
                       )}
 
-                      <span className="w-8 text-center font-mono font-bold text-sm text-slate-900">
+                      <span className="w-8 text-center font-bold text-sm text-slate-900">
                         {qty}
                       </span>
 
@@ -261,8 +261,8 @@ export const CustomerOrderPage: React.FC = () => {
                 onChange={handleAddSimulatedFile}
               />
               <FileUp className="w-7 h-7 text-slate-400 mb-2" />
-              <span className="text-xs font-mono text-slate-700 font-bold">Click to select files</span>
-              <span className="text-[11px] text-slate-500 mt-1 font-mono">PDF, PNG, JPG up to 50MB</span>
+              <span className="text-xs text-slate-700 font-bold">Click to select files</span>
+              <span className="text-[11px] text-slate-500 mt-1">PDF, PNG, JPG up to 50MB</span>
             </label>
 
             {/* Uploaded File Badges */}
@@ -271,7 +271,7 @@ export const CustomerOrderPage: React.FC = () => {
                 {files.map((f, idx) => (
                   <div
                     key={idx}
-                    className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-xs font-mono text-slate-700"
+                    className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-700"
                   >
                     <span className="truncate max-w-[200px] font-medium">{f.name}</span>
                     <div className="flex items-center gap-3 shrink-0 text-slate-500">
@@ -290,7 +290,7 @@ export const CustomerOrderPage: React.FC = () => {
         <div className="space-y-6">
           
           <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-xl space-y-4">
-            <h2 className="text-base font-bold text-slate-900 font-mono uppercase tracking-wider flex items-center justify-between">
+            <h2 className="text-base font-bold text-slate-900 uppercase tracking-wider flex items-center justify-between">
               <span>Order Summary</span>
               <ShoppingBag className="w-4 h-4 text-sky-600" />
             </h2>
@@ -298,31 +298,31 @@ export const CustomerOrderPage: React.FC = () => {
             {/* Customer Inputs */}
             <div className="space-y-3 pt-2">
               <div>
-                <label className="block text-xs font-mono uppercase text-slate-600 mb-1 font-bold">Your Full Name</label>
+                <label className="block text-xs uppercase text-slate-600 mb-1 font-bold tracking-wider">Your Full Name</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Chandra Mohan"
                   value={customerName}
                   onChange={(e) => setCustomerName(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-sm text-slate-900 focus:bg-white focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 font-mono"
+                  className="w-full px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-sm text-slate-900 focus:bg-white focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-mono uppercase text-slate-600 mb-1 font-bold">Phone Number (For Pickup)</label>
+                <label className="block text-xs uppercase text-slate-600 mb-1 font-bold tracking-wider">Phone Number (For Pickup)</label>
                 <input
                   type="tel"
                   required
                   placeholder="e.g. 9392306031"
                   value={customerPhone}
                   onChange={(e) => setCustomerPhone(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-sm text-slate-900 focus:bg-white focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 font-mono"
+                  className="w-full px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-sm text-slate-900 focus:bg-white focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-mono uppercase text-slate-600 mb-1 font-bold">Special Notes / Instructions</label>
+                <label className="block text-xs uppercase text-slate-600 mb-1 font-bold tracking-wider">Special Notes / Instructions</label>
                 <textarea
                   rows={2}
                   placeholder="e.g. Color print on glossy paper, duplex"
@@ -334,7 +334,7 @@ export const CustomerOrderPage: React.FC = () => {
             </div>
 
             {/* Line Items List */}
-            <div className="pt-4 border-t border-slate-100 space-y-2 text-xs font-mono">
+            <div className="pt-4 border-t border-slate-100 space-y-2 text-xs">
               {Object.entries(selectedItems).map(([idStr, qty]) => {
                 const s = services.find((srv) => srv.id === parseInt(idStr, 10));
                 if (!s) return null;
@@ -350,8 +350,8 @@ export const CustomerOrderPage: React.FC = () => {
 
             {/* Live Total Display */}
             <div className="pt-4 border-t border-slate-200 flex items-baseline justify-between">
-              <span className="text-xs font-mono uppercase text-slate-500 font-bold">Estimated Total</span>
-              <div className="text-2xl font-extrabold font-mono text-emerald-600">
+              <span className="text-xs uppercase text-slate-500 font-bold tracking-wider">Estimated Total</span>
+              <div className="text-2xl font-extrabold text-emerald-600">
                 ₹{estimatedTotal.toFixed(2)}
               </div>
             </div>
@@ -366,7 +366,7 @@ export const CustomerOrderPage: React.FC = () => {
             <button
               type="submit"
               disabled={submitting || Object.keys(selectedItems).length === 0}
-              className="w-full py-3 px-4 rounded-xl bg-sky-600 hover:bg-sky-500 disabled:bg-slate-200 disabled:text-slate-400 font-mono font-bold text-sm text-white shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed"
+              className="w-full py-3 px-4 rounded-xl bg-sky-600 hover:bg-sky-500 disabled:bg-slate-200 disabled:text-slate-400 font-bold text-sm text-white shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed"
             >
               {submitting ? (
                 <>

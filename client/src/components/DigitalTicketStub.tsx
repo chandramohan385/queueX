@@ -49,7 +49,7 @@ export const DigitalTicketStub: React.FC<DigitalTicketStubProps> = ({ order }) =
           <div className="flex items-center justify-between gap-4 mb-4">
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-sm bg-sky-500 inline-block animate-pulse" />
-              <span className="text-xs uppercase tracking-widest font-mono text-slate-500 font-semibold">
+              <span className="text-xs uppercase tracking-wider text-slate-500 font-bold">
                 QueueX Service Token
               </span>
             </div>
@@ -58,32 +58,32 @@ export const DigitalTicketStub: React.FC<DigitalTicketStubProps> = ({ order }) =
 
           <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mt-2">
             <div>
-              <span className="text-xs font-mono uppercase text-slate-400 font-semibold">Token ID</span>
+              <span className="text-xs uppercase text-slate-400 font-bold tracking-wider">Token ID</span>
               <h1 className="text-4xl sm:text-5xl font-extrabold font-mono text-slate-900 tracking-tight">
                 {order.token_number}
               </h1>
             </div>
             <div className="text-left sm:text-right">
-              <span className="text-xs font-mono uppercase text-slate-400 font-semibold">Estimated Total</span>
-              <div className="text-2xl sm:text-3xl font-extrabold font-mono text-emerald-600">
+              <span className="text-xs uppercase text-slate-400 font-bold tracking-wider">Estimated Total</span>
+              <div className="text-2xl sm:text-3xl font-extrabold text-emerald-600">
                 ₹{parseFloat(String(order.total_amount)).toFixed(2)}
               </div>
             </div>
           </div>
 
           {/* Customer Meta Row */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-6 pt-4 border-t border-slate-200 text-xs text-slate-600 font-mono">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-6 pt-4 border-t border-slate-200 text-xs text-slate-600">
             <div className="flex items-center gap-1.5 truncate">
               <User className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-              <span className="truncate">{order.customer_name}</span>
+              <span className="truncate font-medium">{order.customer_name}</span>
             </div>
             <div className="flex items-center gap-1.5 truncate">
               <Phone className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-              <span>{order.customer_phone}</span>
+              <span className="font-medium">{order.customer_phone}</span>
             </div>
             <div className="flex items-center gap-1.5 col-span-2 sm:col-span-1">
               <Calendar className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-              <span>{formattedDate}</span>
+              <span className="font-medium">{formattedDate}</span>
             </div>
           </div>
         </div>
@@ -97,7 +97,7 @@ export const DigitalTicketStub: React.FC<DigitalTicketStubProps> = ({ order }) =
 
         {/* 3. Live Order Progress Stepper */}
         <div className="p-6 sm:p-8 bg-white border-b border-slate-200">
-          <h3 className="text-xs uppercase font-mono tracking-widest text-slate-500 mb-5 font-bold">
+          <h3 className="text-xs uppercase tracking-wider text-slate-500 mb-5 font-bold">
             Live Production Status
           </h3>
 
@@ -120,7 +120,7 @@ export const DigitalTicketStub: React.FC<DigitalTicketStubProps> = ({ order }) =
 
                   {/* Step Icon Pill */}
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-mono shrink-0 transition-colors z-10 ${
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-xs shrink-0 transition-colors z-10 ${
                       isCurrent
                         ? 'bg-amber-50 text-amber-700 border-2 border-amber-500 shadow-sm'
                         : isPast
@@ -142,7 +142,7 @@ export const DigitalTicketStub: React.FC<DigitalTicketStubProps> = ({ order }) =
                         {s.label}
                       </p>
                       {isCurrent && (
-                        <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-200 font-bold">
+                        <span className="text-[10px] uppercase px-2 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-200 font-bold">
                           Current Step
                         </span>
                       )}
@@ -157,11 +157,11 @@ export const DigitalTicketStub: React.FC<DigitalTicketStubProps> = ({ order }) =
 
         {/* 4. Itemized Service Breakdown */}
         <div className="p-6 sm:p-8 bg-slate-50/50">
-          <h3 className="text-xs uppercase font-mono tracking-widest text-slate-500 mb-4 font-bold">
+          <h3 className="text-xs uppercase tracking-wider text-slate-500 mb-4 font-bold">
             Service Specifications
           </h3>
 
-          <div className="divide-y divide-slate-200 text-xs font-mono">
+          <div className="divide-y divide-slate-200 text-xs">
             {order.items?.map((item, idx) => (
               <div key={idx} className="py-2.5 flex items-center justify-between gap-2">
                 <div className="flex-1 truncate">
@@ -182,14 +182,14 @@ export const DigitalTicketStub: React.FC<DigitalTicketStubProps> = ({ order }) =
           {/* Attached Files Section */}
           {order.files && order.files.length > 0 && (
             <div className="mt-5 pt-4 border-t border-slate-200">
-              <h4 className="text-[11px] uppercase font-mono text-slate-500 mb-2 font-bold">
+              <h4 className="text-[11px] uppercase text-slate-500 mb-2 font-bold tracking-wider">
                 Attached Documents ({order.files.length})
               </h4>
               <div className="flex flex-col gap-1.5">
                 {order.files.map((file, idx) => (
                   <div
                     key={idx}
-                    className="flex items-center justify-between p-2.5 rounded-lg bg-white border border-slate-200 text-xs text-slate-700 font-mono shadow-xs"
+                    className="flex items-center justify-between p-2.5 rounded-lg bg-white border border-slate-200 text-xs text-slate-700 shadow-xs"
                   >
                     <div className="flex items-center gap-2 truncate">
                       <FileText className="w-3.5 h-3.5 text-sky-600 shrink-0" />
@@ -207,7 +207,7 @@ export const DigitalTicketStub: React.FC<DigitalTicketStubProps> = ({ order }) =
           {/* Notes if any */}
           {order.notes && (
             <div className="mt-4 p-3 rounded-lg bg-amber-50/70 border border-amber-200 text-xs text-amber-900">
-              <span className="font-semibold block mb-0.5 font-mono text-[11px] uppercase">
+              <span className="font-bold block mb-0.5 text-[11px] uppercase tracking-wider">
                 Special Instructions:
               </span>
               <p className="italic">{order.notes}</p>
@@ -220,7 +220,7 @@ export const DigitalTicketStub: React.FC<DigitalTicketStubProps> = ({ order }) =
             <span className="font-mono text-[11px] tracking-widest text-slate-600 uppercase font-bold">
               *{order.token_number}*
             </span>
-            <p className="text-[11px] text-slate-500 text-center mt-1 font-mono">
+            <p className="text-[11px] text-slate-500 text-center mt-1">
               Keep this screen open or save your token number. Show it at the counter for pickup.
             </p>
           </div>

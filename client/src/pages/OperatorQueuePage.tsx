@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { getOrdersQueue, updateOrderStatus, getQueueStats, getOrderByTokenOrId } from '../services/api';
 import type { Order, OrderStatus, QueueStats } from '../types';
 import { StatusBadge } from '../components/StatusBadge';
@@ -93,11 +93,11 @@ export const OperatorQueuePage: React.FC = () => {
       {/* Header & Title */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 text-xs font-mono mb-2 font-semibold">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 text-xs mb-2 font-semibold">
             <Layers className="w-3.5 h-3.5 text-sky-600" />
             <span>Counter Operations POS</span>
           </div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 font-mono">
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">
             Dispatcher Queue
           </h1>
           <p className="text-xs text-slate-500 mt-1">
@@ -107,7 +107,7 @@ export const OperatorQueuePage: React.FC = () => {
 
         <button
           onClick={() => loadData(false)}
-          className="self-start sm:self-center inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 text-xs font-mono text-slate-700 transition-colors shadow-xs"
+          className="self-start sm:self-center inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 text-xs text-slate-700 transition-colors shadow-xs font-medium"
         >
           <RefreshCw className="w-3.5 h-3.5 text-sky-600" />
           <span>Sync Now</span>
@@ -115,7 +115,7 @@ export const OperatorQueuePage: React.FC = () => {
       </div>
 
       {error && (
-        <div className="mb-6 p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-mono">
+        <div className="mb-6 p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs">
           {error}
         </div>
       )}
@@ -125,46 +125,46 @@ export const OperatorQueuePage: React.FC = () => {
         
         <div className="p-5 rounded-xl bg-white border border-slate-200 shadow-sm">
           <div className="flex items-center justify-between text-slate-500 mb-2">
-            <span className="text-xs font-mono uppercase font-bold">In Queue</span>
+            <span className="text-xs uppercase font-bold tracking-wider">In Queue</span>
             <Clock className="w-4 h-4 text-slate-400" />
           </div>
-          <div className="text-2xl sm:text-3xl font-extrabold font-mono text-slate-900">
+          <div className="text-2xl sm:text-3xl font-extrabold text-slate-900">
             {stats ? stats.queued_count : '0'}
           </div>
-          <span className="text-[11px] text-slate-500 font-mono">Awaiting production</span>
+          <span className="text-[11px] text-slate-500">Awaiting production</span>
         </div>
 
         <div className="p-5 rounded-xl bg-white border border-slate-200 shadow-sm">
           <div className="flex items-center justify-between text-amber-700 mb-2">
-            <span className="text-xs font-mono uppercase font-bold">Processing</span>
+            <span className="text-xs uppercase font-bold tracking-wider">Processing</span>
             <Cpu className="w-4 h-4 animate-spin text-amber-600" />
           </div>
-          <div className="text-2xl sm:text-3xl font-extrabold font-mono text-amber-700">
+          <div className="text-2xl sm:text-3xl font-extrabold text-amber-700">
             {stats ? stats.processing_count : '0'}
           </div>
-          <span className="text-[11px] text-slate-500 font-mono">Printing & binding</span>
+          <span className="text-[11px] text-slate-500">Printing & binding</span>
         </div>
 
         <div className="p-5 rounded-xl bg-white border border-slate-200 shadow-sm">
           <div className="flex items-center justify-between text-emerald-700 mb-2">
-            <span className="text-xs font-mono uppercase font-bold">Ready for Pickup</span>
+            <span className="text-xs uppercase font-bold tracking-wider">Ready for Pickup</span>
             <CheckCircle2 className="w-4 h-4 text-emerald-600" />
           </div>
-          <div className="text-2xl sm:text-3xl font-extrabold font-mono text-emerald-700">
+          <div className="text-2xl sm:text-3xl font-extrabold text-emerald-700">
             {stats ? stats.ready_count : '0'}
           </div>
-          <span className="text-[11px] text-slate-500 font-mono">In collection tray</span>
+          <span className="text-[11px] text-slate-500">In collection tray</span>
         </div>
 
         <div className="p-5 rounded-xl bg-white border border-slate-200 shadow-sm">
           <div className="flex items-center justify-between text-sky-700 mb-2">
-            <span className="text-xs font-mono uppercase font-bold">Today's Revenue</span>
+            <span className="text-xs uppercase font-bold tracking-wider">Today's Revenue</span>
             <IndianRupee className="w-4 h-4 text-sky-600" />
           </div>
-          <div className="text-2xl sm:text-3xl font-extrabold font-mono text-slate-900">
+          <div className="text-2xl sm:text-3xl font-extrabold text-slate-900">
             ₹{stats ? parseFloat(String(stats.today_revenue)).toFixed(2) : '0.00'}
           </div>
-          <span className="text-[11px] text-slate-500 font-mono">
+          <span className="text-[11px] text-slate-500">
             {stats ? stats.completed_today_count : 0} orders settled
           </span>
         </div>
@@ -180,7 +180,7 @@ export const OperatorQueuePage: React.FC = () => {
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-all shrink-0 ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all shrink-0 ${
                 activeTab === tab
                   ? 'bg-slate-900 text-white font-bold shadow-xs'
                   : 'bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50'
@@ -199,7 +199,7 @@ export const OperatorQueuePage: React.FC = () => {
             placeholder="Search token, name, phone..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-3 py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-mono text-slate-900 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 shadow-xs"
+            className="w-full pl-9 pr-3 py-1.5 rounded-lg bg-white border border-slate-200 text-xs text-slate-900 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 shadow-xs"
           />
         </div>
 
@@ -208,7 +208,7 @@ export const OperatorQueuePage: React.FC = () => {
       {/* High-Density Orders Table */}
       <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-md">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs font-mono">
+          <table className="w-full text-left text-xs">
             
             <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 uppercase tracking-wider text-[11px] font-bold">
               <tr>
@@ -225,14 +225,14 @@ export const OperatorQueuePage: React.FC = () => {
             <tbody className="divide-y divide-slate-100">
               {loading && orders.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-slate-500 font-mono">
+                  <td colSpan={7} className="py-12 text-center text-slate-500 text-xs">
                     <div className="w-6 h-6 border-2 border-sky-600 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
                     Loading queue orders...
                   </td>
                 </tr>
               ) : orders.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-slate-500 font-mono">
+                  <td colSpan={7} className="py-12 text-center text-slate-500 text-xs">
                     No orders matching the filter '{activeTab}'.
                   </td>
                 </tr>
@@ -347,8 +347,8 @@ export const OperatorQueuePage: React.FC = () => {
               {/* Drawer Top Header */}
               <div className="flex items-center justify-between pb-4 border-b border-slate-200 mb-6">
                 <div>
-                  <span className="text-[10px] font-mono uppercase text-slate-400 font-bold">Inspection Drawer</span>
-                  <h2 className="text-2xl font-extrabold font-mono text-slate-900">
+                  <span className="text-[10px] uppercase text-slate-400 font-bold tracking-wider">Inspection Drawer</span>
+                  <h2 className="text-2xl font-extrabold text-slate-900">
                     {selectedOrder.token_number}
                   </h2>
                 </div>
@@ -361,7 +361,7 @@ export const OperatorQueuePage: React.FC = () => {
               </div>
 
               {/* Customer Info */}
-              <div className="space-y-3 mb-6 p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs font-mono">
+              <div className="space-y-3 mb-6 p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs">
                 <div className="flex items-center justify-between">
                   <span className="text-slate-500">Customer</span>
                   <span className="font-bold text-slate-900">{selectedOrder.customer_name}</span>
@@ -378,10 +378,10 @@ export const OperatorQueuePage: React.FC = () => {
 
               {/* Line Items */}
               <div className="mb-6">
-                <h3 className="text-xs uppercase font-mono tracking-wider text-slate-500 font-bold mb-3">
+                <h3 className="text-xs uppercase tracking-wider text-slate-500 font-bold mb-3">
                   Job Specifications
                 </h3>
-                <div className="divide-y divide-slate-200 rounded-xl bg-slate-50 border border-slate-200 p-4 text-xs font-mono">
+                <div className="divide-y divide-slate-200 rounded-xl bg-slate-50 border border-slate-200 p-4 text-xs">
                   {selectedOrder.items?.map((item, idx) => (
                     <div key={idx} className="py-2 flex justify-between items-center">
                       <div>
@@ -407,14 +407,14 @@ export const OperatorQueuePage: React.FC = () => {
               {/* Files */}
               {selectedOrder.files && selectedOrder.files.length > 0 && (
                 <div className="mb-6">
-                  <h3 className="text-xs uppercase font-mono tracking-wider text-slate-500 font-bold mb-3">
+                  <h3 className="text-xs uppercase tracking-wider text-slate-500 font-bold mb-3">
                     Attached Files ({selectedOrder.files.length})
                   </h3>
                   <div className="space-y-2">
                     {selectedOrder.files.map((f, idx) => (
                       <div
                         key={idx}
-                        className="p-3 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-between text-xs font-mono"
+                        className="p-3 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-between text-xs"
                       >
                         <div className="flex items-center gap-2 truncate">
                           <FileText className="w-4 h-4 text-sky-600 shrink-0" />
@@ -432,7 +432,7 @@ export const OperatorQueuePage: React.FC = () => {
               {/* Notes */}
               {selectedOrder.notes && (
                 <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 text-xs mb-6 text-amber-900">
-                  <span className="font-mono text-amber-800 uppercase font-bold block mb-1">
+                  <span className="text-amber-800 uppercase font-bold block mb-1 text-[11px]">
                     Special Customer Notes:
                   </span>
                   <p className="italic">{selectedOrder.notes}</p>
@@ -445,7 +445,7 @@ export const OperatorQueuePage: React.FC = () => {
               {selectedOrder.status === 'QUEUED' && (
                 <button
                   onClick={() => handleStatusAdvance(selectedOrder.id, 'PROCESSING')}
-                  className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-mono font-bold text-xs transition-colors shadow-xs"
+                  className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition-colors shadow-xs"
                 >
                   Start Processing Job
                 </button>
@@ -454,7 +454,7 @@ export const OperatorQueuePage: React.FC = () => {
               {selectedOrder.status === 'PROCESSING' && (
                 <button
                   onClick={() => handleStatusAdvance(selectedOrder.id, 'READY')}
-                  className="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-mono font-bold text-xs transition-colors shadow-xs"
+                  className="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-colors shadow-xs"
                 >
                   Mark Ready for Pickup
                 </button>
@@ -463,7 +463,7 @@ export const OperatorQueuePage: React.FC = () => {
               {selectedOrder.status === 'READY' && (
                 <button
                   onClick={() => handleStatusAdvance(selectedOrder.id, 'COMPLETED')}
-                  className="w-full py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-mono font-bold text-xs transition-colors shadow-xs"
+                  className="w-full py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs transition-colors shadow-xs"
                 >
                   Mark Collected & Settled
                 </button>
@@ -471,7 +471,7 @@ export const OperatorQueuePage: React.FC = () => {
 
               <button
                 onClick={() => setSelectedOrder(null)}
-                className="w-full py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono text-xs font-semibold transition-colors"
+                className="w-full py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-colors"
               >
                 Close Drawer
               </button>

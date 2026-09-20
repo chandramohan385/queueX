@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getOrderByTokenOrId } from '../services/api';
 import type { Order } from '../types';
@@ -69,14 +69,14 @@ export const CustomerTrackPage: React.FC = () => {
         <button
           type="button"
           onClick={() => navigate('/')}
-          className="self-start inline-flex items-center gap-2 text-xs font-mono text-slate-500 hover:text-slate-900 transition-colors font-medium"
+          className="self-start inline-flex items-center gap-2 text-xs text-slate-500 hover:text-slate-900 transition-colors font-medium"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Back to Counter Desk</span>
         </button>
 
         {order && (
-          <div className="flex items-center gap-3 self-end text-xs font-mono text-slate-600">
+          <div className="flex items-center gap-3 self-end text-xs text-slate-600">
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-semibold">
               <Radio className="w-3 h-3 text-emerald-600 animate-pulse" />
               <span>Live Telemetry Active</span>
@@ -97,7 +97,7 @@ export const CustomerTrackPage: React.FC = () => {
       {/* Manual Search Form if no token or wants to look up another */}
       {(!order || !routeToken) && (
         <div className="max-w-md mx-auto my-8 p-6 rounded-2xl bg-white border border-slate-200 shadow-xl text-left">
-          <h2 className="text-base font-bold text-slate-900 font-mono uppercase tracking-wider mb-2">
+          <h2 className="text-base font-bold text-slate-900 tracking-tight mb-2">
             Track Token Status
           </h2>
           <p className="text-xs text-slate-500 mb-4">
@@ -112,12 +112,12 @@ export const CustomerTrackPage: React.FC = () => {
                 placeholder="e.g. PX-001"
                 value={searchToken}
                 onChange={(e) => setSearchToken(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 rounded-lg bg-slate-50 border border-slate-300 text-sm font-mono text-slate-900 uppercase focus:bg-white focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
+                className="w-full pl-9 pr-3 py-2 rounded-lg bg-slate-50 border border-slate-300 text-sm text-slate-900 uppercase focus:bg-white focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
               />
             </div>
             <button
               type="submit"
-              className="px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 font-mono font-bold text-xs text-white transition-colors shadow-xs"
+              className="px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 font-bold text-xs text-white transition-colors shadow-xs"
             >
               Lookup
             </button>
@@ -127,7 +127,7 @@ export const CustomerTrackPage: React.FC = () => {
 
       {/* Error Alert */}
       {error && (
-        <div className="max-w-md mx-auto my-4 p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-mono flex items-center gap-3 text-left">
+        <div className="max-w-md mx-auto my-4 p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center gap-3 text-left">
           <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
           <span>{error}</span>
         </div>
@@ -137,7 +137,7 @@ export const CustomerTrackPage: React.FC = () => {
       {loading && (
         <div className="py-20 text-center">
           <div className="w-8 h-8 border-2 border-sky-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-          <p className="font-mono text-xs text-slate-500">Querying QueueX Realtime Engine...</p>
+          <p className="text-xs text-slate-500">Querying QueueX Realtime Engine...</p>
         </div>
       )}
 

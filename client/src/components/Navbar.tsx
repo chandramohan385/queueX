@@ -22,12 +22,12 @@ export const Navbar: React.FC = () => {
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="font-extrabold text-lg tracking-tight text-slate-900 font-mono">QueueX</span>
-              <span className="text-[10px] font-mono uppercase bg-sky-50 text-sky-700 px-1.5 py-0.5 rounded border border-sky-200 font-bold">
+              <span className="font-extrabold text-xl tracking-tight text-slate-900">QueueX</span>
+              <span className="text-[10px] uppercase bg-sky-50 text-sky-700 px-1.5 py-0.5 rounded border border-sky-200 font-bold">
                 PRO
               </span>
             </div>
-            <p className="text-[10px] text-slate-500 font-mono hidden sm:block">Smart Counter & Queue Dispatch</p>
+            <p className="text-[11px] text-slate-500 hidden sm:block font-normal">Smart Counter & Queue Dispatch</p>
           </div>
         </Link>
 
@@ -41,9 +41,9 @@ export const Navbar: React.FC = () => {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-lg text-xs font-mono font-medium transition-all ${
+                className={`flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
                   isActive
-                    ? 'bg-slate-900 text-white shadow-xs'
+                    ? 'bg-slate-900 text-white shadow-xs font-semibold'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
@@ -55,7 +55,7 @@ export const Navbar: React.FC = () => {
         </nav>
 
         {/* Live Status Pill */}
-        <div className="hidden md:flex items-center gap-2 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-[11px] font-mono text-slate-600 font-medium">
+        <div className="hidden md:flex items-center gap-2 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-[11px] text-slate-600 font-medium">
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
             <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600" />
