@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+﻿import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getOrderByTokenOrId } from '../services/api';
 import type { Order } from '../types';
@@ -36,7 +36,6 @@ export const CustomerTrackPage: React.FC = () => {
     []
   );
 
-  // Initial load if token is in URL
   useEffect(() => {
     if (routeToken) {
       setSearchToken(routeToken);
@@ -44,7 +43,7 @@ export const CustomerTrackPage: React.FC = () => {
     }
   }, [routeToken, fetchTokenDetails]);
 
-  // Live Auto-Poll Every 3.5 seconds to track operator updates in real time
+  // Live Auto-Poll Every 3.5 seconds
   useEffect(() => {
     if (!order || order.status === 'COMPLETED' || order.status === 'CANCELLED') return;
 
@@ -70,26 +69,26 @@ export const CustomerTrackPage: React.FC = () => {
         <button
           type="button"
           onClick={() => navigate('/')}
-          className="self-start inline-flex items-center gap-2 text-xs font-mono text-zinc-400 hover:text-white transition-colors"
+          className="self-start inline-flex items-center gap-2 text-xs font-mono text-slate-500 hover:text-slate-900 transition-colors font-medium"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Back to Counter Desk</span>
         </button>
 
         {order && (
-          <div className="flex items-center gap-3 self-end text-xs font-mono text-zinc-400">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-950/60 border border-emerald-800/80 text-emerald-400 text-[11px]">
-              <Radio className="w-3 h-3 animate-pulse" />
-              <span>Live Status Sync</span>
+          <div className="flex items-center gap-3 self-end text-xs font-mono text-slate-600">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-semibold">
+              <Radio className="w-3 h-3 text-emerald-600 animate-pulse" />
+              <span>Live Telemetry Active</span>
             </span>
 
             <button
               onClick={() => fetchTokenDetails(order.token_number, true)}
               disabled={refreshing}
-              className="p-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white transition-colors"
+              className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors shadow-xs"
               title="Refresh status"
             >
-              <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-sky-400' : ''}`} />
+              <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-sky-600' : ''}`} />
             </button>
           </div>
         )}
@@ -97,28 +96,28 @@ export const CustomerTrackPage: React.FC = () => {
 
       {/* Manual Search Form if no token or wants to look up another */}
       {(!order || !routeToken) && (
-        <div className="max-w-md mx-auto my-8 p-6 rounded-2xl bg-zinc-900/90 border border-zinc-800 shadow-xl text-left">
-          <h2 className="text-base font-bold text-white font-mono uppercase tracking-wider mb-2">
+        <div className="max-w-md mx-auto my-8 p-6 rounded-2xl bg-white border border-slate-200 shadow-xl text-left">
+          <h2 className="text-base font-bold text-slate-900 font-mono uppercase tracking-wider mb-2">
             Track Token Status
           </h2>
-          <p className="text-xs text-zinc-400 mb-4">
-            Enter your token number (e.g. <span className="font-mono text-sky-400">PX-001</span>) or order ID.
+          <p className="text-xs text-slate-500 mb-4">
+            Enter your token number (e.g. <span className="font-mono text-sky-600 font-bold">PX-001</span>) or order ID.
           </p>
 
           <form onSubmit={handleSearchSubmit} className="flex gap-2">
             <div className="relative flex-1">
-              <Search className="w-4 h-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2" />
+              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 placeholder="e.g. PX-001"
                 value={searchToken}
                 onChange={(e) => setSearchToken(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 rounded-lg bg-zinc-950 border border-zinc-800 text-sm font-mono text-white uppercase focus:outline-none focus:border-sky-500"
+                className="w-full pl-9 pr-3 py-2 rounded-lg bg-slate-50 border border-slate-300 text-sm font-mono text-slate-900 uppercase focus:bg-white focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
               />
             </div>
             <button
               type="submit"
-              className="px-4 py-2 rounded-lg bg-sky-500 hover:bg-sky-400 font-mono font-bold text-xs text-white transition-colors"
+              className="px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 font-mono font-bold text-xs text-white transition-colors shadow-xs"
             >
               Lookup
             </button>
@@ -128,8 +127,8 @@ export const CustomerTrackPage: React.FC = () => {
 
       {/* Error Alert */}
       {error && (
-        <div className="max-w-md mx-auto my-4 p-4 rounded-xl bg-rose-950/60 border border-rose-800 text-rose-300 text-xs font-mono flex items-center gap-3 text-left">
-          <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+        <div className="max-w-md mx-auto my-4 p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-mono flex items-center gap-3 text-left">
+          <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
           <span>{error}</span>
         </div>
       )}
@@ -137,8 +136,8 @@ export const CustomerTrackPage: React.FC = () => {
       {/* Loading Skeleton */}
       {loading && (
         <div className="py-20 text-center">
-          <div className="w-8 h-8 border-2 border-sky-400 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-          <p className="font-mono text-xs text-zinc-400">Querying QueueX Realtime Engine...</p>
+          <div className="w-8 h-8 border-2 border-sky-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+          <p className="font-mono text-xs text-slate-500">Querying QueueX Realtime Engine...</p>
         </div>
       )}
 

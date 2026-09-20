@@ -3,13 +3,13 @@
 
 :root {
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
   margin: 0;
-  background-color: #090d16;
-  color: #f1f5f9;
+  background-color: #f8fafc;
+  color: #0f172a;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
 }
@@ -18,14 +18,15 @@ body {
   font-family: 'JetBrains Mono', monospace;
 }
 
-/* Industrial Ticket Notches */
+/* Industrial Ticket Notches for Bright Theme */
 .ticket-notch-left {
   position: absolute;
   left: -12px;
   width: 24px;
   height: 24px;
   border-radius: 9999px;
-  background-color: #090d16;
+  background-color: #f8fafc;
+  box-shadow: inset -2px 0 3px rgba(0, 0, 0, 0.06);
 }
 
 .ticket-notch-right {
@@ -34,22 +35,23 @@ body {
   width: 24px;
   height: 24px;
   border-radius: 9999px;
-  background-color: #090d16;
+  background-color: #f8fafc;
+  box-shadow: inset 2px 0 3px rgba(0, 0, 0, 0.06);
 }
 
-/* Barcode simulation pattern */
+/* Crisp Scannable Barcode simulation for Bright Theme */
 .barcode-pattern {
   background: repeating-linear-gradient(
     90deg,
-    #94a3b8 0px,
-    #94a3b8 2px,
+    #0f172a 0px,
+    #0f172a 2px,
     transparent 2px,
     transparent 5px,
-    #94a3b8 5px,
-    #94a3b8 9px,
+    #0f172a 5px,
+    #0f172a 9px,
     transparent 9px,
     transparent 12px,
-    #94a3b8 12px,
-    #94a3b8 13px
+    #0f172a 12px,
+    #0f172a 13px
   );
 }
