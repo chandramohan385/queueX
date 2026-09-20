@@ -38,8 +38,8 @@ export const Navbar: React.FC = () => {
           </div>
         </Link>
 
-        {/* Navigation Tabs */}
-        <nav className="flex items-center gap-1 sm:gap-2">
+        {/* Desktop Navigation Tabs (Hidden on mobile) */}
+        <nav className="hidden sm:flex items-center gap-1 sm:gap-2">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path || (item.path !== '/' && location.pathname.startsWith(item.path));
@@ -111,6 +111,36 @@ export const Navbar: React.FC = () => {
           </div>
         </div>
 
+      </div>
+
+      {/* Mobile Bottom Navigation Dock (Visible only on mobile devices) */}
+      <div className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 safe-area-bottom shadow-lg">
+        <div className="grid grid-cols-3 h-14">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive =
+              location.pathname === item.path ||
+              (item.path !== '/' && location.pathname.startsWith(item.path));
+
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`flex flex-col items-center justify-center gap-1 py-1 transition-all ${
+                  isActive ? 'text-sky-600 font-bold' : 'text-slate-500 hover:text-slate-800 font-medium'
+                }`}
+              >
+                <div className="relative">
+                  <Icon className={`w-5 h-5 ${isActive ? 'text-sky-600 stroke-[2.5]' : 'text-slate-500'}`} />
+                  {item.requiresAuth && !isAuthenticated && (
+                    <Lock className="w-2.5 h-2.5 text-slate-400 absolute -top-1 -right-2" />
+                  )}
+                </div>
+                <span className="text-[10px] tracking-tight">{item.label}</span>
+              </Link>
+            );
+          })}
+        </div>
       </div>
     </header>
   );

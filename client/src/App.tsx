@@ -17,8 +17,8 @@ export const App: React.FC = () => {
           {/* Navigation */}
           <Navbar />
 
-          {/* Main Content Area */}
-          <main className="flex-1">
+          {/* Main Content Area (With bottom padding on mobile for dock) */}
+          <main className="flex-1 pb-16 sm:pb-0">
             <Routes>
               {/* Public Customer Routes */}
               <Route path="/" element={<CustomerOrderPage />} />
@@ -42,7 +42,7 @@ export const App: React.FC = () => {
           </main>
 
           {/* Footer */}
-          <footer className="border-t border-slate-200 bg-white py-6 text-center text-xs text-slate-500">
+          <footer className="border-t border-slate-200 bg-white py-6 pb-24 sm:pb-6 text-center text-xs text-slate-500">
             <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
               <p>QueueX — Smart Service & Order Management Platform</p>
               <p>

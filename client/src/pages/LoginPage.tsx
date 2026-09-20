@@ -44,13 +44,13 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto px-4 py-12 text-left">
+    <div className="max-w-md mx-auto px-4 py-6 sm:py-12 text-left">
       
       {/* Return to Public Desk */}
       <button
         type="button"
         onClick={() => navigate('/')}
-        className="inline-flex items-center gap-2 text-xs text-slate-500 hover:text-slate-900 transition-colors font-medium mb-6"
+        className="inline-flex items-center gap-2 text-xs text-slate-500 hover:text-slate-900 transition-colors font-medium mb-4 sm:mb-6 cursor-pointer"
       >
         <ArrowLeft className="w-3.5 h-3.5" />
         <span>Return to Customer Counter</span>
@@ -60,11 +60,11 @@ export const LoginPage: React.FC = () => {
       <div className="bg-white rounded-2xl border border-slate-200 shadow-xl overflow-hidden">
         
         {/* Card Header */}
-        <div className="p-6 sm:p-8 border-b border-slate-100 bg-slate-50/50">
-          <div className="w-12 h-12 rounded-xl bg-sky-50 border border-sky-200 flex items-center justify-center text-sky-600 mb-4 shadow-xs">
-            <Lock className="w-6 h-6" />
+        <div className="p-5 sm:p-8 border-b border-slate-100 bg-slate-50/50">
+          <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-sky-50 border border-sky-200 flex items-center justify-center text-sky-600 mb-3 sm:mb-4 shadow-xs">
+            <Lock className="w-5 h-5 sm:w-6 sm:h-6" />
           </div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">
+          <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900">
             Staff & Owner Login
           </h1>
           <p className="text-xs text-slate-500 mt-1">
@@ -73,10 +73,10 @@ export const LoginPage: React.FC = () => {
         </div>
 
         {/* Form Body */}
-        <div className="p-6 sm:p-8 space-y-6">
+        <div className="p-5 sm:p-8 space-y-5 sm:space-y-6">
           
           {error && (
-            <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-start gap-3">
+            <div className="p-3.5 sm:p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-start gap-3">
               <AlertCircle className="w-4 h-4 shrink-0 text-rose-600 mt-0.5" />
               <div className="flex-1 font-medium">{error}</div>
             </div>
@@ -97,7 +97,7 @@ export const LoginPage: React.FC = () => {
                   placeholder="name@queuex.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-3 py-2.5 rounded-lg bg-slate-50 border border-slate-300 text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition-all font-medium"
+                  className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-slate-50 border border-slate-300 text-base sm:text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition-all font-medium"
                 />
               </div>
             </div>
@@ -115,7 +115,7 @@ export const LoginPage: React.FC = () => {
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-10 py-2.5 rounded-lg bg-slate-50 border border-slate-300 text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition-all font-medium"
+                  className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-slate-50 border border-slate-300 text-base sm:text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition-all font-medium"
                 />
                 <button
                   type="button"

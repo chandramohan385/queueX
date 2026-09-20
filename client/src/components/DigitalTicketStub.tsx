@@ -43,35 +43,35 @@ export const DigitalTicketStub: React.FC<DigitalTicketStubProps> = ({ order }) =
   const isPaid = order.payment_status === 'PAID';
 
   return (
-    <div className="w-full max-w-lg mx-auto my-6 text-left">
+    <div className="w-full max-w-lg mx-auto my-2 sm:my-6 text-left">
       
       {/* Outer Card with subtle industrial ticket border */}
       <div className="bg-white rounded-3xl border border-slate-200/90 shadow-xl overflow-hidden transition-all">
         
         {/* 1. Header & Live Token Header */}
-        <div className="p-6 sm:p-8 bg-slate-50/70 border-b border-slate-200">
-          <div className="flex items-center justify-between mb-4">
+        <div className="p-4 sm:p-8 bg-slate-50/70 border-b border-slate-200">
+          <div className="flex items-center justify-between mb-3 sm:mb-4">
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-sm bg-sky-500 inline-block animate-pulse" />
-              <span className="text-xs uppercase tracking-wider text-slate-500 font-bold">
+              <span className="text-[11px] sm:text-xs uppercase tracking-wider text-slate-500 font-bold">
                 QueueX Service Token
               </span>
             </div>
-            <StatusBadge status={order.status} size="md" />
+            <StatusBadge status={order.status} size="sm" />
           </div>
 
-          <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-3 mt-2">
+          <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-3 mt-1 sm:mt-2">
             <div>
-              <span className="text-xs uppercase text-slate-400 font-bold tracking-wider">Token ID</span>
-              <h1 className="text-4xl sm:text-5xl font-extrabold font-mono text-slate-900 tracking-tight">
+              <span className="text-[10px] sm:text-xs uppercase text-slate-400 font-bold tracking-wider">Token ID</span>
+              <h1 className="text-3xl sm:text-5xl font-extrabold font-mono text-slate-900 tracking-tight">
                 {order.token_number}
               </h1>
             </div>
             
             {/* Amount & Payment Status */}
             <div className="text-left sm:text-right">
-              <span className="text-xs uppercase text-slate-400 font-bold tracking-wider">Estimated Total</span>
-              <div className="text-2xl sm:text-3xl font-extrabold text-emerald-600">
+              <span className="text-[10px] sm:text-xs uppercase text-slate-400 font-bold tracking-wider">Estimated Total</span>
+              <div className="text-2xl sm:text-3xl font-extrabold text-emerald-600 font-mono">
                 ₹{parseFloat(String(order.total_amount)).toFixed(2)}
               </div>
               
@@ -92,16 +92,16 @@ export const DigitalTicketStub: React.FC<DigitalTicketStubProps> = ({ order }) =
           </div>
 
           {/* Customer Meta Row */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-6 pt-4 border-t border-slate-200 text-xs text-slate-600">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-slate-200 text-xs text-slate-600">
             <div className="flex items-center gap-1.5 truncate">
               <User className="w-3.5 h-3.5 text-slate-400 shrink-0" />
               <span className="truncate font-medium">{order.customer_name}</span>
             </div>
             <div className="flex items-center gap-1.5 truncate">
               <Phone className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-              <span className="font-medium">{order.customer_phone}</span>
+              <span className="font-medium font-mono">{order.customer_phone}</span>
             </div>
-            <div className="flex items-center gap-1.5 col-span-2 sm:col-span-1">
+            <div className="flex items-center gap-1.5">
               <Calendar className="w-3.5 h-3.5 text-slate-400 shrink-0" />
               <span className="font-medium">{formattedDate}</span>
             </div>
@@ -116,7 +116,7 @@ export const DigitalTicketStub: React.FC<DigitalTicketStubProps> = ({ order }) =
         </div>
 
         {/* 3. Live Order Progress Stepper */}
-        <div className="p-6 sm:p-8 bg-white border-b border-slate-200">
+        <div className="p-4 sm:p-8 bg-white border-b border-slate-200">
           <h3 className="text-xs uppercase tracking-wider text-slate-500 mb-5 font-bold">
             Live Production Status
           </h3>
@@ -176,7 +176,7 @@ export const DigitalTicketStub: React.FC<DigitalTicketStubProps> = ({ order }) =
         </div>
 
         {/* 4. Itemized Summary & Thermal Print Button */}
-        <div className="p-6 sm:p-8 bg-slate-50/50">
+        <div className="p-4 sm:p-8 bg-slate-50/50">
           <h3 className="text-xs uppercase tracking-wider text-slate-500 mb-3 font-bold">
             Itemized Services
           </h3>
@@ -193,7 +193,7 @@ export const DigitalTicketStub: React.FC<DigitalTicketStubProps> = ({ order }) =
                       {item.quantity} units @ ₹{parseFloat(String(item.unit_price)).toFixed(2)}
                     </span>
                   </div>
-                  <span className="font-bold text-slate-900">
+                  <span className="font-bold text-slate-900 font-mono">
                     ₹{parseFloat(String(item.subtotal)).toFixed(2)}
                   </span>
                 </div>
@@ -238,19 +238,19 @@ export const DigitalTicketStub: React.FC<DigitalTicketStubProps> = ({ order }) =
             </div>
           )}
 
-          {/* Thermal Slip Download Action */}
+          {/* Thermal Slip Download Action (Mobile touch-friendly 44px) */}
           <button
             type="button"
             onClick={() => generateThermalReceipt(order)}
-            className="w-full mt-6 py-2.5 px-4 rounded-xl bg-white hover:bg-slate-100 border border-slate-300 text-slate-800 text-xs font-bold shadow-xs hover:shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
+            className="w-full mt-5 sm:mt-6 py-3 px-4 rounded-xl bg-white hover:bg-slate-100 active:scale-95 border border-slate-300 text-slate-800 text-xs font-bold shadow-xs hover:shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
             <Printer className="w-4 h-4 text-sky-600" />
             <span>Download 80mm Thermal Receipt (PDF)</span>
           </button>
 
           {/* 5. Scannable Barcode simulation footer */}
-          <div className="mt-6 pt-6 border-t border-slate-200 flex flex-col items-center justify-center gap-2">
-            <div className="h-10 w-48 barcode-pattern rounded opacity-90" />
+          <div className="mt-5 sm:mt-6 pt-5 sm:pt-6 border-t border-slate-200 flex flex-col items-center justify-center gap-2">
+            <div className="h-8 sm:h-10 w-44 sm:w-48 barcode-pattern rounded opacity-90" />
             <span className="font-mono text-[11px] tracking-widest text-slate-600 uppercase font-bold">
               *{order.token_number}*
             </span>

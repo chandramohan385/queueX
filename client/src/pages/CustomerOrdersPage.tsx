@@ -187,9 +187,9 @@ export const CustomerOrdersPage: React.FC = () => {
   const pastOrders = orders.filter((o) => ['COMPLETED', 'CANCELLED'].includes(o.status));
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 sm:py-8">
       {/* 1. Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8 pb-5 border-b border-slate-200">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-sky-50 text-sky-700 border border-sky-200">
@@ -211,12 +211,12 @@ export const CustomerOrdersPage: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="grid grid-cols-2 sm:flex items-center gap-2.5 w-full sm:w-auto">
           <button
             type="button"
             onClick={() => savedPhone && loadOrders(savedPhone, filterDays)}
             disabled={loading || !savedPhone}
-            className="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold shadow-xs hover:shadow transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
+            className="flex-1 sm:flex-initial justify-center px-3.5 py-2.5 sm:py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold shadow-xs hover:shadow transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50 active:scale-95"
             title="Refresh order statuses"
           >
             <RefreshCw className={`w-3.5 h-3.5 text-slate-500 ${loading ? 'animate-spin' : ''}`} />
@@ -225,10 +225,10 @@ export const CustomerOrdersPage: React.FC = () => {
 
           <Link
             to="/"
-            className="px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold shadow-xs hover:shadow transition-all flex items-center gap-1.5 cursor-pointer"
+            className="flex-1 sm:flex-initial justify-center px-4 py-2.5 sm:py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold shadow-xs hover:shadow transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 text-center"
           >
-            <PlusCircle className="w-4 h-4" />
-            <span>Place New Order</span>
+            <PlusCircle className="w-4 h-4 shrink-0" />
+            <span className="truncate">New Order</span>
           </Link>
         </div>
       </div>
@@ -291,33 +291,33 @@ export const CustomerOrdersPage: React.FC = () => {
         </div>
       ) : (
         /* Logged in / Remembered Phone Banner */
-        <div className="mb-8 p-4 rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-sky-50 border border-sky-100 flex items-center justify-center text-sky-600 shrink-0">
+        <div className="mb-6 sm:mb-8 p-4 rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3.5">
+          <div className="flex items-start sm:items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-sky-50 border border-sky-100 flex items-center justify-center text-sky-600 shrink-0 mt-0.5 sm:mt-0">
               <UserCheck className="w-5 h-5" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-slate-900">
-                  Customer: +91 {savedPhone}
+              <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                <span className="text-xs font-bold text-slate-900 font-mono">
+                  +91 {savedPhone}
                 </span>
-                <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200">
+                <span className="text-[9px] sm:text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200">
                   Device Remembered
                 </span>
               </div>
-              <p className="text-[11px] text-slate-500">
-                Default view: Showing orders placed within the last 30 days (1 month).
+              <p className="text-[11px] text-slate-500 mt-0.5">
+                Default: Orders within last 30 days (1 month).
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center justify-between sm:justify-end gap-2 pt-2.5 sm:pt-0 border-t sm:border-t-0 border-slate-100">
             {/* Filter scope toggle (30 days default) */}
-            <div className="inline-flex rounded-lg border border-slate-200 bg-slate-50 p-0.5 text-xs font-medium">
+            <div className="inline-flex rounded-xl border border-slate-200 bg-slate-50 p-0.5 text-xs font-medium">
               <button
                 type="button"
                 onClick={() => setFilterDays(30)}
-                className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
                   filterDays === 30
                     ? 'bg-white text-slate-900 font-bold shadow-xs'
                     : 'text-slate-500 hover:text-slate-800'
@@ -328,7 +328,7 @@ export const CustomerOrdersPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setFilterDays(90)}
-                className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
                   filterDays === 90
                     ? 'bg-white text-slate-900 font-bold shadow-xs'
                     : 'text-slate-500 hover:text-slate-800'
@@ -338,24 +338,26 @@ export const CustomerOrdersPage: React.FC = () => {
               </button>
             </div>
 
-            <button
-              type="button"
-              onClick={handleSwitchPhone}
-              className="px-2.5 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-[11px] font-medium text-slate-600 flex items-center gap-1 cursor-pointer"
-              title="Look up another phone number"
-            >
-              <Edit2 className="w-3 h-3 text-slate-400" />
-              <span>Change Phone</span>
-            </button>
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={handleSwitchPhone}
+                className="px-2.5 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-[11px] font-medium text-slate-600 flex items-center gap-1 cursor-pointer active:scale-95"
+                title="Look up another phone number"
+              >
+                <Edit2 className="w-3 h-3 text-slate-400" />
+                <span>Change</span>
+              </button>
 
-            <button
-              type="button"
-              onClick={handleClearSavedPhone}
-              className="p-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-400 hover:text-rose-600 transition-all cursor-pointer"
-              title="Forget this phone number on this device"
-            >
-              <LogOut className="w-3.5 h-3.5" />
-            </button>
+              <button
+                type="button"
+                onClick={handleClearSavedPhone}
+                className="p-1.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-400 hover:text-rose-600 transition-all cursor-pointer active:scale-95"
+                title="Forget this phone number on this device"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -582,23 +584,23 @@ export const CustomerOrdersPage: React.FC = () => {
                   return (
                     <div
                       key={order.id}
-                      className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50/80 transition-all"
+                      className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 hover:bg-slate-50/80 transition-all"
                     >
-                      <div className="flex items-start sm:items-center gap-3.5">
-                        <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center font-mono font-bold text-slate-700 text-xs shrink-0">
+                      <div className="flex items-start sm:items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center font-mono font-bold text-slate-700 text-xs shrink-0 mt-0.5 sm:mt-0">
                           #{order.token_number}
                         </div>
                         <div>
-                          <div className="flex items-center gap-2">
-                            <span className="font-bold text-slate-900 text-sm">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="font-bold text-slate-900 text-sm font-mono">
                               Token #{order.token_number}
                             </span>
                             <StatusBadge status={order.status} size="sm" showPulse={false} />
-                            <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                            <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
                               PAID
                             </span>
                           </div>
-                          <div className="text-xs text-slate-500 flex items-center gap-2 mt-0.5">
+                          <div className="text-xs text-slate-500 flex items-center gap-1.5 mt-0.5">
                             <span>{formattedDate}</span>
                             <span>•</span>
                             <span>{order.item_count || (order.items ? order.items.length : 1)} service(s)</span>
@@ -606,9 +608,9 @@ export const CustomerOrdersPage: React.FC = () => {
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between sm:justify-end gap-4">
+                      <div className="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
                         <div className="text-left sm:text-right">
-                          <span className="text-sm font-extrabold text-slate-900 block">
+                          <span className="text-sm font-extrabold text-slate-900 block font-mono">
                             ₹{Number(order.total_amount).toFixed(2)}
                           </span>
                           <span className="text-[10px] text-slate-400 font-mono">
@@ -620,16 +622,16 @@ export const CustomerOrdersPage: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => generateThermalReceipt(order)}
-                            className="px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-white text-xs font-semibold text-slate-700 flex items-center gap-1.5 cursor-pointer shadow-2xs"
+                            className="px-3 py-2 sm:py-1.5 rounded-xl sm:rounded-lg border border-slate-200 hover:bg-white text-xs font-semibold text-slate-700 flex items-center gap-1.5 cursor-pointer shadow-2xs active:scale-95"
                             title="Download Receipt"
                           >
                             <Printer className="w-3.5 h-3.5 text-slate-500" />
-                            <span className="hidden sm:inline">Receipt</span>
+                            <span>Receipt</span>
                           </button>
                           <button
                             type="button"
                             onClick={() => setActiveTicketOrder(order)}
-                            className="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold flex items-center gap-1 cursor-pointer shadow-2xs"
+                            className="px-3 py-2 sm:py-1.5 rounded-xl sm:rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold flex items-center gap-1 cursor-pointer shadow-2xs active:scale-95"
                           >
                             <span>Ticket</span>
                             <ChevronRight className="w-3.5 h-3.5" />
@@ -645,12 +647,12 @@ export const CustomerOrdersPage: React.FC = () => {
         </div>
       )}
 
-      {/* 6. Modal / Slide-over for Digital Ticket Stub & Thermal Receipt */}
+      {/* 6. Modal / Bottom-Sheet for Digital Ticket Stub & Thermal Receipt */}
       {activeTicketOrder && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto animate-fadeIn">
-          <div className="relative w-full max-w-xl my-8 bg-white rounded-3xl border border-slate-200 shadow-2xl overflow-hidden animate-slideUp">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto animate-fadeIn">
+          <div className="relative w-full max-w-xl max-h-[92vh] sm:max-h-[85vh] my-0 sm:my-8 bg-white rounded-t-3xl sm:rounded-3xl border border-slate-200 shadow-2xl overflow-hidden animate-slideUp flex flex-col">
             {/* Modal Top Bar */}
-            <div className="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+            <div className="sticky top-0 z-10 p-3.5 sm:p-4 bg-slate-50/95 backdrop-blur-xs border-b border-slate-200 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-sky-500 animate-pulse" />
                 <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">
@@ -665,15 +667,16 @@ export const CustomerOrdersPage: React.FC = () => {
                     setSearchParams({});
                   }
                 }}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 transition-all cursor-pointer"
+                className="p-2 rounded-full text-slate-400 hover:text-slate-700 bg-slate-100 hover:bg-slate-200/80 transition-all cursor-pointer active:scale-95"
                 title="Close Ticket Modal"
+                aria-label="Close"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
             {/* Modal Body: Digital Ticket Stub */}
-            <div className="p-4 sm:p-6 max-h-[80vh] overflow-y-auto">
+            <div className="p-3 sm:p-6 overflow-y-auto flex-1">
               <DigitalTicketStub
                 order={activeTicketOrder}
                 onOrderUpdated={(updated) => {

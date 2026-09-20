@@ -65,3 +65,24 @@ h1, h2, h3, h4, h5, h6, button, input, select, textarea, span, p, a, label, div 
     #0f172a 13px
   );
 }
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Safe area padding for mobile bottom nav and sheets */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0.5rem);
+}
+
+/* Prevent double-tap zoom delay on mobile buttons */
+button, a, input, select, textarea {
+  touch-action: manipulation;
+}

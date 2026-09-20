@@ -15,6 +15,7 @@ import {
   Layers,
   Zap,
   Printer,
+  Check,
 } from 'lucide-react';
 
 export const OperatorQueuePage: React.FC = () => {
@@ -120,16 +121,16 @@ export const OperatorQueuePage: React.FC = () => {
   const tabs = ['ALL', 'QUEUED', 'PROCESSING', 'READY', 'COMPLETED'];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 text-left">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-8 text-left">
       
       {/* Header & Title */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-6 sm:mb-8">
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 text-xs mb-2 font-semibold">
             <Layers className="w-3.5 h-3.5 text-sky-600" />
             <span>Counter Operations POS</span>
           </div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
             Dispatcher Queue
           </h1>
           <p className="text-xs text-slate-500 mt-1">
@@ -137,26 +138,26 @@ export const OperatorQueuePage: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-3 self-start sm:self-center">
+        <div className="flex items-center gap-2.5 self-start sm:self-center">
           {sseConnected ? (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold shadow-xs">
+            <span className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold shadow-xs">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600" />
               </span>
               <Zap className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Real-Time SSE Active</span>
+              <span className="text-[11px] sm:text-xs">Live Sync</span>
             </span>
           ) : (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-xs font-semibold shadow-xs">
+            <span className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs font-semibold shadow-xs">
               <RefreshCw className="w-3.5 h-3.5 text-amber-600 animate-spin" />
-              <span>Connecting Telemetry...</span>
+              <span className="text-[11px] sm:text-xs">Connecting...</span>
             </span>
           )}
 
           <button
             onClick={() => loadData(false)}
-            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 text-xs text-slate-700 transition-colors shadow-xs font-medium"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-xs text-slate-700 transition-all shadow-xs font-semibold cursor-pointer active:scale-95"
           >
             <RefreshCw className="w-3.5 h-3.5 text-sky-600" />
             <span>Sync</span>
@@ -170,67 +171,67 @@ export const OperatorQueuePage: React.FC = () => {
         </div>
       )}
 
-      {/* 4 Metric Stats Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      {/* 4 Metric Stats Cards (Mobile responsive 2x2 grid) */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 mb-6 sm:mb-8">
         
-        <div className="p-5 rounded-xl bg-white border border-slate-200 shadow-sm">
-          <div className="flex items-center justify-between text-slate-500 mb-2">
-            <span className="text-xs uppercase font-bold tracking-wider">In Queue</span>
-            <Clock className="w-4 h-4 text-slate-400" />
+        <div className="p-3.5 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-xs">
+          <div className="flex items-center justify-between text-slate-500 mb-1 sm:mb-2">
+            <span className="text-[10px] sm:text-xs uppercase font-bold tracking-wider">In Queue</span>
+            <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400" />
           </div>
-          <div className="text-2xl sm:text-3xl font-extrabold text-slate-900">
+          <div className="text-xl sm:text-3xl font-extrabold text-slate-900 font-mono">
             {stats ? stats.queued_count : '0'}
           </div>
-          <span className="text-[11px] text-slate-500">Awaiting production</span>
+          <span className="text-[10px] sm:text-[11px] text-slate-400 hidden xs:inline">Awaiting production</span>
         </div>
 
-        <div className="p-5 rounded-xl bg-white border border-slate-200 shadow-sm">
-          <div className="flex items-center justify-between text-amber-700 mb-2">
-            <span className="text-xs uppercase font-bold tracking-wider">Processing</span>
-            <Cpu className="w-4 h-4 animate-spin text-amber-600" />
+        <div className="p-3.5 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-xs">
+          <div className="flex items-center justify-between text-amber-700 mb-1 sm:mb-2">
+            <span className="text-[10px] sm:text-xs uppercase font-bold tracking-wider">Processing</span>
+            <Cpu className="w-3.5 h-3.5 sm:w-4 sm:h-4 animate-spin text-amber-600" />
           </div>
-          <div className="text-2xl sm:text-3xl font-extrabold text-amber-700">
+          <div className="text-xl sm:text-3xl font-extrabold text-amber-700 font-mono">
             {stats ? stats.processing_count : '0'}
           </div>
-          <span className="text-[11px] text-slate-500">Printing & binding</span>
+          <span className="text-[10px] sm:text-[11px] text-slate-400 hidden xs:inline">Printing & binding</span>
         </div>
 
-        <div className="p-5 rounded-xl bg-white border border-slate-200 shadow-sm">
-          <div className="flex items-center justify-between text-emerald-700 mb-2">
-            <span className="text-xs uppercase font-bold tracking-wider">Ready for Pickup</span>
-            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+        <div className="p-3.5 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-xs">
+          <div className="flex items-center justify-between text-emerald-700 mb-1 sm:mb-2">
+            <span className="text-[10px] sm:text-xs uppercase font-bold tracking-wider">Ready</span>
+            <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600" />
           </div>
-          <div className="text-2xl sm:text-3xl font-extrabold text-emerald-700">
+          <div className="text-xl sm:text-3xl font-extrabold text-emerald-700 font-mono">
             {stats ? stats.ready_count : '0'}
           </div>
-          <span className="text-[11px] text-slate-500">In collection tray</span>
+          <span className="text-[10px] sm:text-[11px] text-slate-400 hidden xs:inline">Ready for pickup</span>
         </div>
 
-        <div className="p-5 rounded-xl bg-white border border-slate-200 shadow-sm">
-          <div className="flex items-center justify-between text-sky-700 mb-2">
-            <span className="text-xs uppercase font-bold tracking-wider">Today's Revenue</span>
-            <IndianRupee className="w-4 h-4 text-sky-600" />
+        <div className="p-3.5 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-xs">
+          <div className="flex items-center justify-between text-sky-700 mb-1 sm:mb-2">
+            <span className="text-[10px] sm:text-xs uppercase font-bold tracking-wider">Revenue</span>
+            <IndianRupee className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-sky-600" />
           </div>
-          <div className="text-2xl sm:text-3xl font-extrabold text-slate-900">
+          <div className="text-xl sm:text-3xl font-extrabold text-slate-900 font-mono">
             ₹{stats ? parseFloat(String(stats.today_revenue)).toFixed(2) : '0.00'}
           </div>
-          <span className="text-[11px] text-slate-500">
-            {stats ? stats.completed_today_count : 0} orders settled
+          <span className="text-[10px] sm:text-[11px] text-slate-400 hidden xs:inline">
+            {stats ? stats.completed_today_count : 0} settled
           </span>
         </div>
 
       </div>
 
       {/* Filter Tabs & Search Bar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mb-5">
         
-        {/* Status Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0">
+        {/* Status Pills (Scrollable on mobile) */}
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 pb-1 sm:pb-0">
           {tabs.map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all shrink-0 ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all shrink-0 active:scale-95 cursor-pointer ${
                 activeTab === tab
                   ? 'bg-slate-900 text-white font-bold shadow-xs'
                   : 'bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50'
@@ -249,14 +250,14 @@ export const OperatorQueuePage: React.FC = () => {
             placeholder="Search token, name, phone..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-3 py-1.5 rounded-lg bg-white border border-slate-200 text-xs text-slate-900 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 shadow-xs"
+            className="w-full pl-9 pr-3 py-2 sm:py-1.5 rounded-xl bg-white border border-slate-200 text-base sm:text-xs text-slate-900 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 shadow-xs"
           />
         </div>
 
       </div>
 
-      {/* High-Density Orders Table */}
-      <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-md">
+      {/* Desktop High-Density Orders Table (Visible on md+ screens) */}
+      <div className="hidden md:block bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-md">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             
@@ -298,7 +299,7 @@ export const OperatorQueuePage: React.FC = () => {
                     >
                       {/* Token */}
                       <td className="py-3.5 px-4 font-bold text-slate-900 text-sm">
-                        <span className="group-hover:text-sky-600 transition-colors">
+                        <span className="group-hover:text-sky-600 transition-colors font-mono">
                           {order.token_number}
                         </span>
                       </td>
@@ -306,7 +307,7 @@ export const OperatorQueuePage: React.FC = () => {
                       {/* Customer */}
                       <td className="py-3.5 px-4">
                         <div className="font-bold text-slate-900">{order.customer_name}</div>
-                        <div className="text-[11px] text-slate-500">{order.customer_phone}</div>
+                        <div className="text-[11px] text-slate-500 font-mono">{order.customer_phone}</div>
                       </td>
 
                       {/* Summary */}
@@ -318,7 +319,7 @@ export const OperatorQueuePage: React.FC = () => {
                       </td>
 
                       {/* Amount */}
-                      <td className="py-3.5 px-4 font-extrabold text-slate-900">
+                      <td className="py-3.5 px-4 font-extrabold text-slate-900 font-mono">
                         ₹{parseFloat(String(order.total_amount)).toFixed(2)}
                       </td>
 
@@ -344,7 +345,7 @@ export const OperatorQueuePage: React.FC = () => {
                           <button
                             onClick={() => handleStatusAdvance(order.id, 'PROCESSING')}
                             disabled={isBusy}
-                            className="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition-colors shadow-xs"
+                            className="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition-colors shadow-xs active:scale-95 cursor-pointer"
                           >
                             Start Printing
                           </button>
@@ -354,7 +355,7 @@ export const OperatorQueuePage: React.FC = () => {
                           <button
                             onClick={() => handleStatusAdvance(order.id, 'READY')}
                             disabled={isBusy}
-                            className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-colors shadow-xs"
+                            className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-colors shadow-xs active:scale-95 cursor-pointer"
                           >
                             Mark Ready
                           </button>
@@ -364,7 +365,7 @@ export const OperatorQueuePage: React.FC = () => {
                           <button
                             onClick={() => handleStatusAdvance(order.id, 'COMPLETED')}
                             disabled={isBusy}
-                            className="px-3 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs transition-colors shadow-xs"
+                            className="px-3 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs transition-colors shadow-xs active:scale-95 cursor-pointer"
                           >
                             Complete & Paid
                           </button>
@@ -388,10 +389,109 @@ export const OperatorQueuePage: React.FC = () => {
         </div>
       </div>
 
+      {/* Mobile Queue Cards View (Visible on screens < 768px) */}
+      <div className="md:hidden space-y-3">
+        {loading && orders.length === 0 ? (
+          <div className="py-12 text-center bg-white rounded-2xl border border-slate-200">
+            <div className="w-6 h-6 border-2 border-sky-600 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+            <p className="text-xs text-slate-500">Loading queue orders...</p>
+          </div>
+        ) : orders.length === 0 ? (
+          <div className="p-8 text-center bg-white rounded-2xl border border-slate-200 text-slate-500 text-xs">
+            No orders matching the filter '{activeTab}'.
+          </div>
+        ) : (
+          orders.map((order) => {
+            const isBusy = actionLoadingId === order.id;
+
+            return (
+              <div
+                key={order.id}
+                onClick={() => handleOpenDrawer(order)}
+                className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs hover:border-slate-300 transition-all active:scale-[0.99] cursor-pointer space-y-3"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-mono font-extrabold text-base text-slate-900">
+                    #{order.token_number}
+                  </span>
+                  <StatusBadge status={order.status} size="sm" />
+                </div>
+
+                <div className="flex items-center justify-between text-xs pt-1 border-t border-slate-100">
+                  <div>
+                    <span className="font-bold text-slate-900 block">{order.customer_name}</span>
+                    <span className="text-slate-500 text-[11px] font-mono">{order.customer_phone}</span>
+                  </div>
+                  <div className="text-right">
+                    <span className="font-mono font-extrabold text-slate-900 text-sm block">
+                      ₹{parseFloat(String(order.total_amount)).toFixed(2)}
+                    </span>
+                    <span className="text-[11px] text-slate-500">
+                      {order.item_count || 1} items {order.file_count ? `(${order.file_count} files)` : ''}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Mobile Quick Action Dispatch Button */}
+                <div onClick={(e) => e.stopPropagation()} className="pt-1">
+                  {order.status === 'QUEUED' && (
+                    <button
+                      type="button"
+                      onClick={() => handleStatusAdvance(order.id, 'PROCESSING')}
+                      disabled={isBusy}
+                      className="w-full py-2.5 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 active:scale-95 text-slate-950 font-bold text-xs transition-all shadow-xs flex items-center justify-center gap-1.5 cursor-pointer"
+                    >
+                      <Cpu className="w-3.5 h-3.5" />
+                      <span>Start Printing</span>
+                    </button>
+                  )}
+
+                  {order.status === 'PROCESSING' && (
+                    <button
+                      type="button"
+                      onClick={() => handleStatusAdvance(order.id, 'READY')}
+                      disabled={isBusy}
+                      className="w-full py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-bold text-xs transition-all shadow-xs flex items-center justify-center gap-1.5 cursor-pointer"
+                    >
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      <span>Mark Ready for Pickup</span>
+                    </button>
+                  )}
+
+                  {order.status === 'READY' && (
+                    <button
+                      type="button"
+                      onClick={() => handleStatusAdvance(order.id, 'COMPLETED')}
+                      disabled={isBusy}
+                      className="w-full py-2.5 px-3 rounded-xl bg-sky-600 hover:bg-sky-500 active:scale-95 text-white font-bold text-xs transition-all shadow-xs flex items-center justify-center gap-1.5 cursor-pointer"
+                    >
+                      <Check className="w-3.5 h-3.5" />
+                      <span>Complete & Settle</span>
+                    </button>
+                  )}
+
+                  {order.status === 'COMPLETED' && (
+                    <div className="py-2 text-center text-xs font-bold text-slate-400 bg-slate-50 rounded-xl">
+                      Order Settled & Collected
+                    </div>
+                  )}
+
+                  {order.status === 'CANCELLED' && (
+                    <div className="py-2 text-center text-xs font-bold text-rose-500 bg-rose-50 rounded-xl">
+                      Cancelled
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+
       {/* Slide-Over Inspection Drawer */}
       {selectedOrder && (
         <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex justify-end">
-          <div className="w-full max-w-lg bg-white border-l border-slate-200 h-full p-6 sm:p-8 overflow-y-auto shadow-2xl flex flex-col justify-between text-left">
+          <div className="w-full sm:max-w-lg bg-white border-l border-slate-200 h-full p-4 sm:p-8 overflow-y-auto shadow-2xl flex flex-col justify-between text-left">
             
             <div>
               {/* Drawer Top Header */}
