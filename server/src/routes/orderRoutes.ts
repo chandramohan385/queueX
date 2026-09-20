@@ -1,6 +1,7 @@
-﻿import { Router, Request, Response } from 'express';
+import { Router, Request, Response } from 'express';
 import { z } from 'zod';
 import pool from '../db/index';
+import { requireAuth } from '../middleware/authMiddleware';
 
 const router = Router();
 
@@ -179,7 +180,7 @@ router.post('/', async (req: Request, res: Response): Promise<void> => {
  * GET /api/orders/stats/summary
  * Summary metrics for the operator counter dashboard.
  */
-router.get('/stats/summary', async (req: Request, res: Response): Promise<void> => {
+router.get('/stats/summary', requireAuth, async (req: Request, res: Response): Promise<void> => {
   try {
     const statsRes = await pool.query(`
       SELECT
@@ -205,7 +206,7 @@ router.get('/stats/summary', async (req: Request, res: Response): Promise<void> 
  * GET /api/orders
  * Operator queue view. Supports filtering by status and search query.
  */
-router.get('/', async (req: Request, res: Response): Promise<void> => {
+router.get('/', requireAuth, async (req: Request, res: Response): Promise<void> => {
   try {
     const { status, search } = req.query;
 
@@ -331,7 +332,7 @@ router.get('/:tokenOrId', async (req: Request, res: Response): Promise<void> => 
  * PATCH /api/orders/:id/status
  * Advances the order status according to the Finite State Machine rules.
  */
-router.patch('/:id/status', async (req: Request, res: Response): Promise<void> => {
+router.patch('/:id/status', requireAuth, async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
     const { status: targetStatus } = req.body;

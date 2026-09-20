@@ -1,4 +1,4 @@
-﻿export type OrderStatus = 'QUEUED' | 'PROCESSING' | 'READY' | 'COMPLETED' | 'CANCELLED';
+export type OrderStatus = 'QUEUED' | 'PROCESSING' | 'READY' | 'COMPLETED' | 'CANCELLED';
 
 export interface Service {
   id: number;
@@ -61,3 +61,11 @@ export interface QueueStats {
   completed_today_count: string | number;
   today_revenue: string | number;
 }
+
+export interface StaffUser {
+  id: number;
+  name: string;
+  email: string;
+  role: 'OWNER' | 'OPERATOR';
+}
+

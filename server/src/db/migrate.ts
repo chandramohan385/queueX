@@ -1,4 +1,5 @@
-﻿import pool from './index';
+import pool from './index';
+import bcrypt from 'bcryptjs';
 
 async function runMigrations() {
   console.log('🔄 Running QueueX database migrations...');
@@ -66,6 +67,19 @@ async function runMigrations() {
       );
     `);
 
+    // 5. Staff Users Table (Authentication & RBAC)
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS staff_users (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        email VARCHAR(100) UNIQUE NOT NULL,
+        password_hash VARCHAR(255) NOT NULL,
+        role VARCHAR(20) NOT NULL DEFAULT 'OPERATOR',
+        is_active BOOLEAN NOT NULL DEFAULT true,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+      );
+    `);
+
     // Seed default services if table is empty
     const checkServices = await client.query('SELECT COUNT(*) FROM services');
     if (parseInt(checkServices.rows[0].count, 10) === 0) {
@@ -81,6 +95,25 @@ async function runMigrations() {
         ('Passport Photos (Sheet of 8)', 'PHOTO', 'Studio quality glossy photo sheet for official applications', 50.00, 'per_set')
       `);
       console.log('✅ Default services seeded.');
+    }
+
+    // Seed default staff accounts if table is empty
+    const checkStaff = await client.query('SELECT COUNT(*) FROM staff_users');
+    if (parseInt(checkStaff.rows[0].count, 10) === 0) {
+      console.log('🌱 Seeding default staff and admin accounts...');
+      const adminHash = bcrypt.hashSync('QueueX@2026', 10);
+      const staffHash = bcrypt.hashSync('Staff@2026', 10);
+
+      await client.query(
+        `INSERT INTO staff_users (name, email, password_hash, role) VALUES
+         ($1, $2, $3, $4),
+         ($5, $6, $7, $8)`,
+        [
+          'Chandra Mohan (Admin)', 'admin@queuex.com', adminHash, 'OWNER',
+          'Counter Operator', 'staff@queuex.com', staffHash, 'OPERATOR',
+        ]
+      );
+      console.log('✅ Default staff accounts seeded (admin@queuex.com & staff@queuex.com).');
     }
 
     await client.query('COMMIT');

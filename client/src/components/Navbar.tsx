@@ -1,14 +1,21 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Layers, Search, LayoutDashboard, PlusCircle } from 'lucide-react';
+import { Layers, Search, LayoutDashboard, PlusCircle, LogOut, User, Lock } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 export const Navbar: React.FC = () => {
   const location = useLocation();
+  const { user, isAuthenticated, logout } = useAuth();
 
   const navItems = [
     { label: 'Create Order', path: '/', icon: PlusCircle },
     { label: 'Track Ticket', path: '/track', icon: Search },
-    { label: 'Operator POS', path: '/admin', icon: LayoutDashboard },
+    {
+      label: 'Operator POS',
+      path: '/admin',
+      icon: LayoutDashboard,
+      requiresAuth: true,
+    },
   ];
 
   return (
@@ -49,18 +56,59 @@ export const Navbar: React.FC = () => {
               >
                 <Icon className="w-3.5 h-3.5" />
                 <span>{item.label}</span>
+                {item.requiresAuth && !isAuthenticated && (
+                  <Lock className="w-2.5 h-2.5 text-slate-400" />
+                )}
               </Link>
             );
           })}
         </nav>
 
-        {/* Live Status Pill */}
-        <div className="hidden md:flex items-center gap-2 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-[11px] text-slate-600 font-medium">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600" />
-          </span>
-          <span>PostgreSQL Active</span>
+        {/* Right Action: Auth Status or Live Pill */}
+        <div className="flex items-center gap-3">
+          {isAuthenticated ? (
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 px-2.5 py-1 rounded-lg bg-slate-100 border border-slate-200 text-xs text-slate-800">
+                <User className="w-3.5 h-3.5 text-sky-600" />
+                <span className="font-semibold max-w-[120px] truncate hidden sm:inline">{user?.name}</span>
+                <span
+                  className={`text-[9px] uppercase px-1.5 py-0.5 rounded font-bold ${
+                    user?.role === 'OWNER'
+                      ? 'bg-sky-100 text-sky-800 border border-sky-200'
+                      : 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                  }`}
+                >
+                  {user?.role}
+                </span>
+              </div>
+
+              <button
+                type="button"
+                onClick={logout}
+                className="p-1.5 rounded-lg border border-slate-200 hover:bg-rose-50 hover:border-rose-200 text-slate-500 hover:text-rose-600 transition-colors"
+                title="Sign out"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          ) : (
+            <Link
+              to="/login"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 transition-colors shadow-xs"
+            >
+              <Lock className="w-3.5 h-3.5 text-slate-500" />
+              <span>Staff Login</span>
+            </Link>
+          )}
+
+          {/* Database Live Ping */}
+          <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-[11px] text-slate-600 font-medium">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600" />
+            </span>
+            <span>Cloud DB</span>
+          </div>
         </div>
 
       </div>
