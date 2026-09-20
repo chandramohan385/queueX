@@ -3,7 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getOrderByTokenOrId } from '../services/api';
 import type { Order } from '../types';
 import { DigitalTicketStub } from '../components/DigitalTicketStub';
-import { Search, RefreshCw, AlertCircle, Radio, ArrowLeft } from 'lucide-react';
+import { useOrderStream } from '../hooks/useOrderStream';
+import { Search, RefreshCw, AlertCircle, Radio, ArrowLeft, Zap } from 'lucide-react';
 
 export const CustomerTrackPage: React.FC = () => {
   const { token: routeToken } = useParams<{ token?: string }>();
@@ -15,6 +16,7 @@ export const CustomerTrackPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
 
+  // 1. Initial Data Fetch
   const fetchTokenDetails = useCallback(
     async (tokenToFetch: string, silent = false) => {
       if (!tokenToFetch.trim()) return;
@@ -43,16 +45,14 @@ export const CustomerTrackPage: React.FC = () => {
     }
   }, [routeToken, fetchTokenDetails]);
 
-  // Live Auto-Poll Every 3.5 seconds
+  // 2. Real-Time Server-Sent Events (SSE) Stream — Zero Client Polling!
+  const { isConnected, liveOrderUpdate } = useOrderStream(order?.token_number);
+
   useEffect(() => {
-    if (!order || order.status === 'COMPLETED' || order.status === 'CANCELLED') return;
-
-    const intervalId = setInterval(() => {
-      fetchTokenDetails(order.token_number, true);
-    }, 3500);
-
-    return () => clearInterval(intervalId);
-  }, [order, fetchTokenDetails]);
+    if (liveOrderUpdate && order && (liveOrderUpdate.id === order.id || liveOrderUpdate.token_number === order.token_number)) {
+      setOrder((prev) => (prev ? { ...prev, ...liveOrderUpdate } : null));
+    }
+  }, [liveOrderUpdate]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,16 +77,27 @@ export const CustomerTrackPage: React.FC = () => {
 
         {order && (
           <div className="flex items-center gap-3 self-end text-xs text-slate-600">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-semibold">
-              <Radio className="w-3 h-3 text-emerald-600 animate-pulse" />
-              <span>Live Telemetry Active</span>
-            </span>
+            {isConnected ? (
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-semibold">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600" />
+                </span>
+                <Zap className="w-3 h-3 text-emerald-600" />
+                <span>Real-Time SSE Active</span>
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-[11px] font-semibold">
+                <Radio className="w-3 h-3 text-amber-600 animate-pulse" />
+                <span>Connecting Telemetry...</span>
+              </span>
+            )}
 
             <button
               onClick={() => fetchTokenDetails(order.token_number, true)}
               disabled={refreshing}
               className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors shadow-xs"
-              title="Refresh status"
+              title="Manual status sync"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-sky-600' : ''}`} />
             </button>

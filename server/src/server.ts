@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import serviceRoutes from './routes/serviceRoutes';
 import orderRoutes from './routes/orderRoutes';
 import authRoutes from './routes/authRoutes';
+import sseRoutes from './routes/sseRoutes';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -25,6 +26,7 @@ app.use(express.json());
 
 // API Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/events', sseRoutes);
 app.use('/api/services', serviceRoutes);
 app.use('/api/orders', orderRoutes);
 

@@ -1,4 +1,4 @@
-﻿import { Pool } from 'pg';
+import { Pool } from 'pg';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -17,11 +17,16 @@ const pool = new Pool({
   ssl: process.env.NODE_ENV === 'production' || process.env.DATABASE_URL?.includes('supabase')
     ? { rejectUnauthorized: false }
     : false,
+  max: 10,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 10000,
 });
 
 pool.on('error', (err) => {
-  console.error('❌ Unexpected error on idle PostgreSQL client:', err);
-  process.exit(-1);
+  // Cloud poolers (like Supabase PgBouncer) terminate idle TCP sockets periodically.
+  // The pool automatically evicts the dead socket and creates a fresh connection on the next query.
+  // Do NOT exit process.
+  console.warn('⚠️ Idle PostgreSQL client disconnected (pool will auto-reconnect on next query):', err.message);
 });
 
 export const query = (text: string, params?: any[]) => {

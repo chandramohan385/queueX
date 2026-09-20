@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import { z } from 'zod';
 import pool from '../db/index';
 import { requireAuth } from '../middleware/authMiddleware';
+import sseManager from '../services/sseManager';
 
 const router = Router();
 
@@ -38,14 +39,21 @@ const createOrderSchema = z.object({
 });
 
 /**
- * Helper: Generates a human-friendly sequential daily token
- * e.g., PX-001, PX-002, resets each day
+ * Helper: Generates a human-friendly sequential token (e.g. PX-001, PX-002)
+ * Reads the latest token to prevent unique constraint collisions.
  */
 async function generateDailyToken(client: any): Promise<string> {
-  const countRes = await client.query(
-    `SELECT COUNT(*) FROM orders WHERE created_at >= CURRENT_DATE`
+  const maxRes = await client.query(
+    `SELECT token_number FROM orders WHERE token_number LIKE 'PX-%' ORDER BY id DESC LIMIT 1`
   );
-  const nextNumber = parseInt(countRes.rows[0].count, 10) + 1;
+  let nextNumber = 1;
+  if (maxRes.rows.length > 0) {
+    const lastToken = maxRes.rows[0].token_number;
+    const match = lastToken.match(/PX-(\d+)/i);
+    if (match) {
+      nextNumber = parseInt(match[1], 10) + 1;
+    }
+  }
   return `PX-${String(nextNumber).padStart(3, '0')}`;
 }
 
@@ -155,14 +163,25 @@ router.post('/', async (req: Request, res: Response): Promise<void> => {
     // 7. Commit Transaction permanently
     await client.query('COMMIT');
 
+    const fullOrder = {
+      ...createdOrder,
+      item_count: validatedItems.length,
+      file_count: files.length,
+      items: validatedItems,
+      files,
+    };
+
+    // 8. Real-Time Telemetry: Broadcast to active Operator POS screens
+    try {
+      sseManager.broadcastOrderCreated(fullOrder);
+    } catch (sseErr) {
+      console.warn('Non-blocking SSE broadcast error:', sseErr);
+    }
+
     res.status(201).json({
       success: true,
       message: `Order created successfully with token ${tokenNumber}`,
-      data: {
-        ...createdOrder,
-        items: validatedItems,
-        files,
-      },
+      data: fullOrder,
     });
   } catch (error: any) {
     await client.query('ROLLBACK');
@@ -370,14 +389,23 @@ router.patch('/:id/status', requireAuth, async (req: Request, res: Response): Pr
       `UPDATE orders 
        SET status = $1, updated_at = NOW()
        WHERE id = $2
-       RETURNING id, token_number, customer_name, status, total_amount, updated_at`,
+       RETURNING id, token_number, customer_name, customer_phone, status, total_amount, updated_at`,
       [nextStatus, id]
     );
+
+    const updatedOrder = updateRes.rows[0];
+
+    // 4. Real-Time Telemetry: Push status change to operators & customer's ticket stub
+    try {
+      sseManager.broadcastStatusChanged(updatedOrder);
+    } catch (sseErr) {
+      console.warn('Non-blocking SSE broadcast error:', sseErr);
+    }
 
     res.status(200).json({
       success: true,
       message: `Order ${currentOrder.token_number} transitioned from ${currentStatus} to ${nextStatus}`,
-      data: updateRes.rows[0],
+      data: updatedOrder,
     });
   } catch (error) {
     console.error(`Error updating status for order ${req.params.id}:`, error);

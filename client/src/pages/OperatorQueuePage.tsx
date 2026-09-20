@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { getOrdersQueue, updateOrderStatus, getQueueStats, getOrderByTokenOrId } from '../services/api';
+import { getOrdersQueue, updateOrderStatus, getQueueStats, getOrderByTokenOrId, getAuthToken } from '../services/api';
 import type { Order, OrderStatus, QueueStats } from '../types';
 import { StatusBadge } from '../components/StatusBadge';
 import {
@@ -12,6 +12,7 @@ import {
   X,
   FileText,
   Layers,
+  Zap,
 } from 'lucide-react';
 
 export const OperatorQueuePage: React.FC = () => {
@@ -19,6 +20,7 @@ export const OperatorQueuePage: React.FC = () => {
   const [stats, setStats] = useState<QueueStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [sseConnected, setSseConnected] = useState(false);
 
   // Filters
   const [activeTab, setActiveTab] = useState<string>('ALL');
@@ -51,12 +53,40 @@ export const OperatorQueuePage: React.FC = () => {
     loadData();
   }, [loadData]);
 
-  // Auto-refresh queue every 5 seconds for live counter operation
+  // Real-Time Server-Sent Events (SSE) Stream — Zero Polling!
   useEffect(() => {
-    const timer = setInterval(() => {
+    const token = getAuthToken();
+    if (!token) return;
+
+    const sseUrl = `/api/events/orders?token=${encodeURIComponent(token)}`;
+    const eventSource = new EventSource(sseUrl);
+
+    eventSource.addEventListener('CONNECTED', () => {
+      setSseConnected(true);
+    });
+
+    eventSource.addEventListener('ORDER_CREATED', () => {
+      // New order created by walk-in or remote customer: instant refresh with no polling!
       loadData(true);
-    }, 5000);
-    return () => clearInterval(timer);
+    });
+
+    eventSource.addEventListener('STATUS_CHANGED', (event) => {
+      try {
+        const updatedOrder = JSON.parse(event.data);
+        loadData(true);
+        setSelectedOrder((prev) => (prev && prev.id === updatedOrder.id ? { ...prev, ...updatedOrder } : prev));
+      } catch {
+        loadData(true);
+      }
+    });
+
+    eventSource.onopen = () => setSseConnected(true);
+    eventSource.onerror = () => setSseConnected(false);
+
+    return () => {
+      eventSource.close();
+      setSseConnected(false);
+    };
   }, [loadData]);
 
   const handleStatusAdvance = async (orderId: number, nextStatus: OrderStatus) => {
@@ -105,13 +135,31 @@ export const OperatorQueuePage: React.FC = () => {
           </p>
         </div>
 
-        <button
-          onClick={() => loadData(false)}
-          className="self-start sm:self-center inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 text-xs text-slate-700 transition-colors shadow-xs font-medium"
-        >
-          <RefreshCw className="w-3.5 h-3.5 text-sky-600" />
-          <span>Sync Now</span>
-        </button>
+        <div className="flex items-center gap-3 self-start sm:self-center">
+          {sseConnected ? (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold shadow-xs">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600" />
+              </span>
+              <Zap className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Real-Time SSE Active</span>
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-xs font-semibold shadow-xs">
+              <RefreshCw className="w-3.5 h-3.5 text-amber-600 animate-spin" />
+              <span>Connecting Telemetry...</span>
+            </span>
+          )}
+
+          <button
+            onClick={() => loadData(false)}
+            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 text-xs text-slate-700 transition-colors shadow-xs font-medium"
+          >
+            <RefreshCw className="w-3.5 h-3.5 text-sky-600" />
+            <span>Sync</span>
+          </button>
+        </div>
       </div>
 
       {error && (
