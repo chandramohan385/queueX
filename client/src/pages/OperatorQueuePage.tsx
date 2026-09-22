@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { getOrdersQueue, updateOrderStatus, getQueueStats, getOrderByTokenOrId, getAuthToken } from '../services/api';
-import type { Order, OrderStatus, QueueStats } from '../types';
+import type { Order, OrderFile, OrderStatus, QueueStats } from '../types';
 import { StatusBadge } from '../components/StatusBadge';
 import { generateThermalReceipt } from '../utils/receiptGenerator';
+import { printThermalReceiptDirect } from '../utils/thermalPrinter';
+import { DocumentPreviewModal } from '../components/DocumentPreviewModal';
 import {
   Search,
   RefreshCw,
@@ -16,6 +18,8 @@ import {
   Zap,
   Printer,
   Check,
+  Eye,
+  FileDown,
 } from 'lucide-react';
 
 export const OperatorQueuePage: React.FC = () => {
@@ -32,6 +36,7 @@ export const OperatorQueuePage: React.FC = () => {
   // Detail Drawer State
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
+  const [previewFile, setPreviewFile] = useState<OrderFile | null>(null);
 
   const loadData = useCallback(async (silent = false) => {
     try {
@@ -562,18 +567,24 @@ export const OperatorQueuePage: React.FC = () => {
                   </h3>
                   <div className="space-y-2">
                     {selectedOrder.files.map((f, idx) => (
-                      <div
+                      <button
                         key={idx}
-                        className="p-3 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-between text-xs"
+                        type="button"
+                        onClick={() => setPreviewFile(f)}
+                        className="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-sky-300 hover:bg-sky-50/40 flex items-center justify-between text-xs transition-all cursor-pointer text-left group"
+                        title="Click to preview document in-browser"
                       >
                         <div className="flex items-center gap-2 truncate">
-                          <FileText className="w-4 h-4 text-sky-600 shrink-0" />
-                          <span className="truncate text-slate-800 font-medium">{f.file_name}</span>
+                          <FileText className="w-4 h-4 text-sky-600 shrink-0 group-hover:scale-110 transition-transform" />
+                          <span className="truncate text-slate-800 font-medium group-hover:text-sky-700">{f.file_name}</span>
                         </div>
-                        <span className="text-[11px] text-slate-500 shrink-0 ml-2 font-semibold">
-                          {f.page_count} pages
-                        </span>
-                      </div>
+                        <div className="flex items-center gap-2 shrink-0 ml-2">
+                          <span className="text-[11px] text-slate-500 font-semibold">
+                            {f.page_count ? `${f.page_count} pgs` : 'Document'}
+                          </span>
+                          <Eye className="w-3.5 h-3.5 text-slate-400 group-hover:text-sky-600" />
+                        </div>
+                      </button>
                     ))}
                   </div>
                 </div>
@@ -619,14 +630,28 @@ export const OperatorQueuePage: React.FC = () => {
                 </button>
               )}
 
-              <button
-                type="button"
-                onClick={() => generateThermalReceipt(selectedOrder)}
-                className="w-full py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs transition-colors shadow-xs flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <Printer className="w-4 h-4 text-sky-600" />
-                <span>Print 80mm Counter Slip</span>
-              </button>
+              {/* Dual Printing Options: Direct 80mm POS Slip & PDF Download */}
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => printThermalReceiptDirect(selectedOrder)}
+                  className="py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition-colors shadow-xs flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
+                  title="Direct 80mm Continuous Thermal POS Slip"
+                >
+                  <Printer className="w-3.5 h-3.5 text-sky-400" />
+                  <span>Print POS Slip</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => generateThermalReceipt(selectedOrder)}
+                  className="py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs transition-colors shadow-xs flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
+                  title="Download 80mm PDF Receipt"
+                >
+                  <FileDown className="w-3.5 h-3.5 text-slate-600" />
+                  <span>Download PDF</span>
+                </button>
+              </div>
 
               <button
                 onClick={() => setSelectedOrder(null)}
@@ -639,6 +664,13 @@ export const OperatorQueuePage: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Interactive Document Preview Modal */}
+      <DocumentPreviewModal
+        file={previewFile}
+        isOpen={Boolean(previewFile)}
+        onClose={() => setPreviewFile(null)}
+      />
 
     </div>
   );

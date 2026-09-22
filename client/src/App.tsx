@@ -6,6 +6,7 @@ import { Navbar } from './components/Navbar';
 import { CustomerOrderPage } from './pages/CustomerOrderPage';
 import { CustomerOrdersPage } from './pages/CustomerOrdersPage';
 import { OperatorQueuePage } from './pages/OperatorQueuePage';
+import { OwnerAnalyticsPage } from './pages/OwnerAnalyticsPage';
 import { LoginPage } from './pages/LoginPage';
 
 export const App: React.FC = () => {
@@ -35,6 +36,24 @@ export const App: React.FC = () => {
                 element={
                   <ProtectedRoute>
                     <OperatorQueuePage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/queue"
+                element={
+                  <ProtectedRoute>
+                    <OperatorQueuePage />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Protected Shop Owner Analytics Route */}
+              <Route
+                path="/admin/analytics"
+                element={
+                  <ProtectedRoute requiredRole="OWNER">
+                    <OwnerAnalyticsPage />
                   </ProtectedRoute>
                 }
               />

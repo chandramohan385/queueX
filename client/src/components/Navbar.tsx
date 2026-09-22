@@ -1,11 +1,12 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Layers, Clock, LayoutDashboard, PlusCircle, LogOut, User, Lock } from 'lucide-react';
+import { Layers, Clock, LayoutDashboard, PlusCircle, LogOut, User, Lock, BarChart3 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export const Navbar: React.FC = () => {
   const location = useLocation();
   const { user, isAuthenticated, logout } = useAuth();
+  const isOwner = user?.role === 'OWNER';
 
   const navItems = [
     { label: 'Create Order', path: '/', icon: PlusCircle },
@@ -16,6 +17,16 @@ export const Navbar: React.FC = () => {
       icon: LayoutDashboard,
       requiresAuth: true,
     },
+    ...(isOwner
+      ? [
+          {
+            label: 'Analytics',
+            path: '/admin/analytics',
+            icon: BarChart3,
+            requiresAuth: true,
+          },
+        ]
+      : []),
   ];
 
   return (
@@ -115,7 +126,7 @@ export const Navbar: React.FC = () => {
 
       {/* Mobile Bottom Navigation Dock (Visible only on mobile devices) */}
       <div className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 safe-area-bottom shadow-lg">
-        <div className="grid grid-cols-3 h-14">
+        <div className={`grid ${navItems.length === 4 ? 'grid-cols-4' : 'grid-cols-3'} h-14`}>
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive =

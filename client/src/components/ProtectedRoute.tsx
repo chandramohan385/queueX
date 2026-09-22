@@ -4,10 +4,11 @@ import { useAuth } from '../context/AuthContext';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
+  requiredRole?: 'OWNER' | 'OPERATOR';
 }
 
-export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { isAuthenticated, loading } = useAuth();
+export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRole }) => {
+  const { isAuthenticated, user, loading } = useAuth();
   const location = useLocation();
 
   if (loading) {
@@ -22,6 +23,11 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   if (!isAuthenticated) {
     // Redirect to login, but preserve where they were trying to go
     return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+  }
+
+  if (requiredRole && user?.role !== requiredRole) {
+    // Insufficient permissions (e.g. OPERATOR trying to access OWNER analytics)
+    return <Navigate to="/admin/queue" replace />;
   }
 
   return <>{children}</>;

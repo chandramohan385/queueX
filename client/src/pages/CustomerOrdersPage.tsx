@@ -15,12 +15,16 @@ import {
   Edit2,
   CheckCircle2,
   LogOut,
+  Bell,
+  BellRing,
 } from 'lucide-react';
 import { getCustomerOrders, getOrderByTokenOrId } from '../services/api';
 import type { Order } from '../types';
 import { StatusBadge } from '../components/StatusBadge';
 import { DigitalTicketStub } from '../components/DigitalTicketStub';
 import { generateThermalReceipt } from '../utils/receiptGenerator';
+import { printThermalReceiptDirect } from '../utils/thermalPrinter';
+import { useWebNotifications } from '../hooks/useWebNotifications';
 
 export const CustomerOrdersPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -46,6 +50,14 @@ export const CustomerOrdersPage: React.FC = () => {
 
   // Live SSE connection state
   const [isLiveConnected, setIsLiveConnected] = useState<boolean>(false);
+
+  // Web Push & Web Audio Chime notification hook
+  const {
+    isSupported: notifSupported,
+    permission: notifPermission,
+    requestPermission,
+    notifyOrderReady,
+  } = useWebNotifications();
 
   // Load orders for the saved phone
   const loadOrders = useCallback(async (phone: string, days: number) => {
@@ -123,6 +135,11 @@ export const CustomerOrdersPage: React.FC = () => {
           }
           return current;
         });
+
+        // Trigger push notification & harmonic audio chime if ready
+        if (updatedOrder.status === 'READY') {
+          notifyOrderReady(updatedOrder.token_number, updatedOrder.customer_name);
+        }
       } catch (err) {
         console.error('Failed to parse SSE order update:', err);
       }
@@ -152,7 +169,7 @@ export const CustomerOrdersPage: React.FC = () => {
       eventSource.close();
       setIsLiveConnected(false);
     };
-  }, [savedPhone]);
+  }, [savedPhone, notifyOrderReady]);
 
   // Phone submission handler
   const handleSavePhone = (e: React.FormEvent) => {
@@ -201,6 +218,36 @@ export const CustomerOrdersPage: React.FC = () => {
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 <span>Live Sync Active</span>
               </span>
+            )}
+            {notifSupported && (
+              <button
+                type="button"
+                onClick={async () => {
+                  if (notifPermission !== 'granted') {
+                    await requestPermission();
+                  } else {
+                    notifyOrderReady('DEMO', 'Customer');
+                  }
+                }}
+                className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold transition-all cursor-pointer border ${
+                  notifPermission === 'granted'
+                    ? 'bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100'
+                    : 'bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200'
+                }`}
+                title={notifPermission === 'granted' ? 'Alerts active (Click to test chime)' : 'Click to enable order ready sound & notifications'}
+              >
+                {notifPermission === 'granted' ? (
+                  <>
+                    <BellRing className="w-3.5 h-3.5 text-amber-600" />
+                    <span>Alerts On</span>
+                  </>
+                ) : (
+                  <>
+                    <Bell className="w-3.5 h-3.5 text-slate-500" />
+                    <span>Enable Alerts</span>
+                  </>
+                )}
+              </button>
             )}
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
@@ -538,9 +585,9 @@ export const CustomerOrdersPage: React.FC = () => {
                         </button>
                         <button
                           type="button"
-                          onClick={() => generateThermalReceipt(order)}
+                          onClick={() => printThermalReceiptDirect(order)}
                           className="p-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 transition-all cursor-pointer"
-                          title="Download 80mm Thermal Receipt PDF"
+                          title="Direct 80mm Thermal Receipt Slip"
                         >
                           <Printer className="w-4 h-4 text-slate-600" />
                         </button>

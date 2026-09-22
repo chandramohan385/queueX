@@ -1,4 +1,12 @@
-import type { Service, Order, OrderStatus, QueueStats, StaffUser } from '../types';
+import type {
+  Service,
+  Order,
+  OrderStatus,
+  QueueStats,
+  StaffUser,
+  OwnerAnalyticsData,
+  DailySettlementData,
+} from '../types';
 
 const API_BASE = '/api';
 
@@ -10,8 +18,18 @@ export function setAuthToken(token: string): void {
   localStorage.setItem('queuex_token', token);
 }
 
+export function getStoredUser(): StaffUser | null {
+  try {
+    const raw = localStorage.getItem('queuex_user');
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
 export function clearAuthToken(): void {
   localStorage.removeItem('queuex_token');
+  localStorage.removeItem('queuex_user');
 }
 
 function getAuthHeaders(): HeadersInit {
@@ -38,6 +56,9 @@ export async function loginStaff(email: string, password: string): Promise<{ tok
   }
 
   setAuthToken(data.token);
+  try {
+    localStorage.setItem('queuex_user', JSON.stringify(data.user));
+  } catch {}
   return { token: data.token, user: data.user };
 }
 
@@ -52,6 +73,9 @@ export async function getMe(): Promise<StaffUser> {
     throw new Error(data.message || 'Session expired. Please log in again.');
   }
 
+  try {
+    localStorage.setItem('queuex_user', JSON.stringify(data.user));
+  } catch {}
   return data.user;
 }
 
@@ -159,6 +183,38 @@ export async function getCustomerOrders(phone: string, days = 30): Promise<Order
   if (!data.success) throw new Error(data.message || 'Failed to fetch your orders');
   return data.data;
 }
+
+// ==================== OWNER ANALYTICS & SETTLEMENT ====================
+
+export async function getOwnerAnalytics(
+  range: 'today' | '7days' | '30days' | '90days' | 'all' = '30days'
+): Promise<OwnerAnalyticsData> {
+  const res = await fetch(`${API_BASE}/analytics/overview?range=${range}`, {
+    headers: getAuthHeaders(),
+  });
+
+  const data = await res.json();
+  if (res.status === 401 || res.status === 403) {
+    throw new Error(data.message || 'Access restricted. Owner credentials required.');
+  }
+  if (!data.success) throw new Error(data.message || 'Failed to fetch analytics overview');
+  return data.data;
+}
+
+export async function getDailySettlement(date?: string): Promise<DailySettlementData> {
+  const query = date ? `?date=${encodeURIComponent(date)}` : '';
+  const res = await fetch(`${API_BASE}/analytics/settlement${query}`, {
+    headers: getAuthHeaders(),
+  });
+
+  const data = await res.json();
+  if (res.status === 401 || res.status === 403) {
+    throw new Error(data.message || 'Access restricted. Owner credentials required.');
+  }
+  if (!data.success) throw new Error(data.message || 'Failed to fetch daily settlement data');
+  return data.data;
+}
+
 
 
 

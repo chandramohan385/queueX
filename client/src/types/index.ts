@@ -69,3 +69,62 @@ export interface StaffUser {
   role: 'OWNER' | 'OPERATOR';
 }
 
+export interface HourlyVolume {
+  hour: number;
+  label: string;
+  order_count: number;
+}
+
+export interface TopServiceMetric {
+  service_id: number;
+  service_name: string;
+  category: string;
+  base_price: string | number;
+  unit: string;
+  order_count: number;
+  total_quantity: number;
+  total_revenue: string | number;
+}
+
+export interface RevenueTrend {
+  date: string;
+  formatted_date: string;
+  revenue: string | number;
+  order_count: number;
+}
+
+export interface AnalyticsMetrics {
+  total_revenue: string | number;
+  total_orders: number;
+  completed_orders: number;
+  cancelled_orders: number;
+  active_orders: number;
+  avg_order_value: string | number;
+}
+
+export interface OwnerAnalyticsData {
+  metrics: AnalyticsMetrics;
+  hourly_distribution: HourlyVolume[];
+  top_services: TopServiceMetric[];
+  revenue_trends: RevenueTrend[];
+}
+
+export interface SettlementServiceSummary {
+  service_name: string;
+  category: string;
+  unit: string;
+  quantity: number;
+  revenue: string | number;
+}
+
+export interface DailySettlementData {
+  total_orders: number;
+  completed_orders: number;
+  cancelled_orders: number;
+  settled_revenue: string | number;
+  pending_revenue: string | number;
+  token_start: string | null;
+  token_end: string | null;
+  services_summary: SettlementServiceSummary[];
+}
+

@@ -1,8 +1,22 @@
-import React from 'react';
-import { FileText, CheckCircle2, Clock, Cpu, User, Phone, Calendar, Printer } from 'lucide-react';
-import type { Order } from '../types';
+import React, { useState } from 'react';
+import {
+  FileText,
+  CheckCircle2,
+  Clock,
+  Cpu,
+  User,
+  Phone,
+  Calendar,
+  Printer,
+  Share2,
+  Eye,
+  FileDown,
+} from 'lucide-react';
+import type { Order, OrderFile } from '../types';
 import { StatusBadge } from './StatusBadge';
 import { generateThermalReceipt } from '../utils/receiptGenerator';
+import { printThermalReceiptDirect } from '../utils/thermalPrinter';
+import { DocumentPreviewModal } from './DocumentPreviewModal';
 
 interface DigitalTicketStubProps {
   order: Order;
@@ -10,6 +24,8 @@ interface DigitalTicketStubProps {
 }
 
 export const DigitalTicketStub: React.FC<DigitalTicketStubProps> = ({ order }) => {
+  const [previewFile, setPreviewFile] = useState<OrderFile | null>(null);
+
   const steps = [
     { key: 'QUEUED', label: 'Ticket Issued', desc: 'Order logged at counter', icon: Clock },
     { key: 'PROCESSING', label: 'In Production', desc: 'Printing & finishing job', icon: Cpu },
@@ -41,6 +57,19 @@ export const DigitalTicketStub: React.FC<DigitalTicketStubProps> = ({ order }) =
   });
 
   const isPaid = order.payment_status === 'PAID';
+
+  const handleShareWhatsApp = () => {
+    const origin = typeof window !== 'undefined' ? window.location.origin : '';
+    const trackingUrl = `${origin}/orders?token=${encodeURIComponent(order.token_number)}`;
+    const message =
+      `*QueueX Print Token: #${order.token_number}*\n` +
+      `Customer: ${order.customer_name}\n` +
+      `Status: ${order.status}\n` +
+      `Amount: ₹${parseFloat(String(order.total_amount)).toFixed(2)} (${isPaid ? 'PAID' : 'Pay at counter'})\n` +
+      `Track Live: ${trackingUrl}`;
+
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`, '_blank');
+  };
 
   return (
     <div className="w-full max-w-lg mx-auto my-2 sm:my-6 text-left">
@@ -175,7 +204,7 @@ export const DigitalTicketStub: React.FC<DigitalTicketStubProps> = ({ order }) =
           </div>
         </div>
 
-        {/* 4. Itemized Summary & Thermal Print Button */}
+        {/* 4. Itemized Summary & Actions */}
         <div className="p-4 sm:p-8 bg-slate-50/50">
           <h3 className="text-xs uppercase tracking-wider text-slate-500 mb-3 font-bold">
             Itemized Services
@@ -211,18 +240,23 @@ export const DigitalTicketStub: React.FC<DigitalTicketStubProps> = ({ order }) =
               </h4>
               <div className="space-y-1.5">
                 {order.files.map((file, idx) => (
-                  <div
+                  <button
                     key={idx}
-                    className="flex items-center justify-between p-2.5 rounded-lg bg-white border border-slate-200 text-xs text-slate-700 shadow-xs"
+                    type="button"
+                    onClick={() => setPreviewFile(file)}
+                    className="w-full flex items-center justify-between p-2.5 rounded-xl bg-white border border-slate-200 hover:border-sky-300 hover:bg-sky-50/30 text-xs text-slate-700 shadow-xs transition-all cursor-pointer text-left group"
                   >
                     <div className="flex items-center gap-2 truncate">
-                      <FileText className="w-3.5 h-3.5 text-sky-600 shrink-0" />
-                      <span className="truncate font-medium">{file.file_name}</span>
+                      <FileText className="w-4 h-4 text-sky-600 shrink-0 group-hover:scale-110 transition-transform" />
+                      <span className="truncate font-medium group-hover:text-sky-800">{file.file_name}</span>
                     </div>
-                    <span className="text-[10px] text-slate-400 shrink-0 ml-2">
-                      {file.page_count ? `${file.page_count} pgs` : 'Document'}
-                    </span>
-                  </div>
+                    <div className="flex items-center gap-1.5 shrink-0 ml-2">
+                      <span className="text-[10px] text-slate-400">
+                        {file.page_count ? `${file.page_count} pgs` : 'Document'}
+                      </span>
+                      <Eye className="w-3.5 h-3.5 text-slate-400 group-hover:text-sky-600" />
+                    </div>
+                  </button>
                 ))}
               </div>
             </div>
@@ -238,18 +272,44 @@ export const DigitalTicketStub: React.FC<DigitalTicketStubProps> = ({ order }) =
             </div>
           )}
 
-          {/* Thermal Slip Download Action (Mobile touch-friendly 44px) */}
-          <button
-            type="button"
-            onClick={() => generateThermalReceipt(order)}
-            className="w-full mt-5 sm:mt-6 py-3 px-4 rounded-xl bg-white hover:bg-slate-100 active:scale-95 border border-slate-300 text-slate-800 text-xs font-bold shadow-xs hover:shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
-          >
-            <Printer className="w-4 h-4 text-sky-600" />
-            <span>Download 80mm Thermal Receipt (PDF)</span>
-          </button>
+          {/* Action Buttons: 80mm Print & WhatsApp Share */}
+          <div className="mt-6 space-y-2.5">
+            {/* Direct 80mm Thermal Print */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => printThermalReceiptDirect(order)}
+                className="py-3 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 active:scale-95 text-white text-xs font-bold shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
+                title="Direct 80mm Continuous Thermal Slip"
+              >
+                <Printer className="w-4 h-4 text-sky-400" />
+                <span>Print POS Slip</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => generateThermalReceipt(order)}
+                className="py-3 px-4 rounded-xl bg-white hover:bg-slate-100 active:scale-95 border border-slate-300 text-slate-800 text-xs font-bold shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
+                title="Download 80mm PDF Receipt"
+              >
+                <FileDown className="w-4 h-4 text-slate-600" />
+                <span>Download PDF</span>
+              </button>
+            </div>
+
+            {/* 1-Tap WhatsApp Share Button */}
+            <button
+              type="button"
+              onClick={handleShareWhatsApp}
+              className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white text-xs font-bold shadow-xs hover:shadow transition-all flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <Share2 className="w-4 h-4" />
+              <span>Share Token via WhatsApp</span>
+            </button>
+          </div>
 
           {/* 5. Scannable Barcode simulation footer */}
-          <div className="mt-5 sm:mt-6 pt-5 sm:pt-6 border-t border-slate-200 flex flex-col items-center justify-center gap-2">
+          <div className="mt-6 pt-5 border-t border-slate-200 flex flex-col items-center justify-center gap-2">
             <div className="h-8 sm:h-10 w-44 sm:w-48 barcode-pattern rounded opacity-90" />
             <span className="font-mono text-[11px] tracking-widest text-slate-600 uppercase font-bold">
               *{order.token_number}*
@@ -262,6 +322,12 @@ export const DigitalTicketStub: React.FC<DigitalTicketStubProps> = ({ order }) =
         </div>
       </div>
 
+      {/* Document Preview Modal */}
+      <DocumentPreviewModal
+        file={previewFile}
+        isOpen={Boolean(previewFile)}
+        onClose={() => setPreviewFile(null)}
+      />
     </div>
   );
 };

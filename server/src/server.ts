@@ -6,6 +6,7 @@ import serviceRoutes from './routes/serviceRoutes';
 import orderRoutes from './routes/orderRoutes';
 import authRoutes from './routes/authRoutes';
 import sseRoutes from './routes/sseRoutes';
+import analyticsRoutes from './routes/analyticsRoutes';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -29,6 +30,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/events', sseRoutes);
 app.use('/api/services', serviceRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 // Health Check Endpoint - Allows us and cloud platforms (Vercel/Render) to verify server status
 app.get('/api/health', (req: Request, res: Response) => {
