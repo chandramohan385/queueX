@@ -1,5 +1,5 @@
 import React from 'react';
-import { Clock, Cpu, CheckCircle2, Check, AlertCircle } from 'lucide-react';
+import { Clock, RefreshCw, CheckCircle2, Check, AlertCircle } from 'lucide-react';
 import type { OrderStatus } from '../types';
 
 interface StatusBadgeProps {
@@ -20,10 +20,10 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, size = 'md', s
         };
       case 'PROCESSING':
         return {
-          label: 'Processing / Printing',
+          label: 'Printing',
           bgColor: 'bg-amber-50 text-amber-900 border-amber-300',
           dotColor: 'bg-amber-500',
-          icon: <Cpu className="w-3.5 h-3.5 mr-1 text-amber-600 animate-spin" />,
+          icon: <RefreshCw className="w-3.5 h-3.5 mr-1 text-amber-600 animate-spin" />,
         };
       case 'READY':
         return {

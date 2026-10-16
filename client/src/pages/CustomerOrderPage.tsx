@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getServices, createOrder } from '../services/api';
 import type { Service } from '../types';
-import { ShoppingBag, Plus, Minus, FileUp, Sparkles, AlertCircle, ArrowRight, ShieldCheck } from 'lucide-react';
+import { ShoppingBag, Plus, Minus, FileUp, AlertCircle, ArrowRight, Trash2, FileText, CheckCircle2 } from 'lucide-react';
 
 export const CustomerOrderPage: React.FC = () => {
   const navigate = useNavigate();
@@ -81,6 +81,10 @@ export const CustomerOrderPage: React.FC = () => {
     setFiles((prev) => [...prev, ...newFiles]);
   };
 
+  const handleRemoveFile = (indexToRemove: number) => {
+    setFiles((prev) => prev.filter((_, idx) => idx !== indexToRemove));
+  };
+
   const estimatedTotal = Object.entries(selectedItems).reduce((sum, [serviceIdStr, qty]) => {
     const service = services.find((s) => s.id === parseInt(serviceIdStr, 10));
     if (!service) return sum;
@@ -146,8 +150,8 @@ export const CustomerOrderPage: React.FC = () => {
   if (loading) {
     return (
       <div className="py-24 text-center">
-        <div className="w-8 h-8 border-2 border-sky-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-        <p className="text-xs text-slate-500">Connecting to QueueX Service Catalog...</p>
+        <div className="w-8 h-8 border-2 border-slate-900 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+        <p className="text-xs text-slate-500 font-medium">Loading print services...</p>
       </div>
     );
   }
@@ -155,19 +159,15 @@ export const CustomerOrderPage: React.FC = () => {
   const totalItemsCount = Object.values(selectedItems).reduce((sum, q) => sum + q, 0);
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-5 sm:py-8">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-5 sm:py-8 pb-36 sm:pb-12">
       
-      {/* Hero Intro */}
+      {/* Page Header */}
       <div className="text-left mb-6 sm:mb-8">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-50 border border-sky-200 text-sky-700 text-xs mb-2.5 font-semibold">
-          <Sparkles className="w-3.5 h-3.5 text-sky-600" />
-          <span>Walk-In & Remote Counter Desk</span>
-        </div>
-        <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
-          Create Service Order
+        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+          Place Print Order
         </h1>
-        <p className="text-xs sm:text-sm text-slate-600 mt-1">
-          Select printing or finishing services, attach your files, and generate your live digital queue token.
+        <p className="text-xs sm:text-sm text-slate-500 mt-1">
+          Select printing and document services, upload your files, and pick up with your token number at the counter.
         </p>
       </div>
 
@@ -268,18 +268,18 @@ export const CustomerOrderPage: React.FC = () => {
           </div>
 
           {/* Document Upload Section */}
-          <div className="p-5 rounded-xl bg-white border border-slate-200 shadow-xs">
+          <div className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs">
             <div className="flex items-center justify-between mb-3">
               <div>
                 <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                  <FileUp className="w-4 h-4 text-sky-600" />
-                  Attach Documents / Prints
+                  <FileUp className="w-4 h-4 text-slate-700" />
+                  <span>Attach Documents (Optional)</span>
                 </h3>
-                <p className="text-xs text-slate-500">PDFs, Word documents, or image files to be processed</p>
+                <p className="text-xs text-slate-500 mt-0.5">PDF, Word documents, or image files to be printed</p>
               </div>
             </div>
 
-            <label className="border-2 border-dashed border-slate-300 hover:border-slate-400 rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer transition-colors bg-slate-50/70">
+            <label className="border-2 border-dashed border-slate-300 hover:border-slate-400 rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer transition-colors bg-slate-50/70 hover:bg-slate-50">
               <input
                 type="file"
                 multiple
@@ -287,22 +287,45 @@ export const CustomerOrderPage: React.FC = () => {
                 onChange={handleAddSimulatedFile}
               />
               <FileUp className="w-7 h-7 text-slate-400 mb-2" />
-              <span className="text-xs text-slate-700 font-bold">Click to select files</span>
-              <span className="text-[11px] text-slate-500 mt-1">PDF, PNG, JPG up to 50MB</span>
+              <span className="text-xs text-slate-800 font-bold">Click to select files from device</span>
+              <span className="text-[11px] text-slate-500 mt-1">Supports PDF, DOCX, PNG, JPG (up to 50MB)</span>
             </label>
 
-            {/* Uploaded File Badges */}
+            {/* Uploaded File List with Delete Action */}
             {files.length > 0 && (
-              <div className="mt-3 space-y-2">
+              <div className="mt-4 space-y-2">
+                <div className="flex items-center justify-between text-[11px] font-semibold text-slate-500 uppercase tracking-wider px-1">
+                  <span>Attached Files ({files.length})</span>
+                  <span>Pages / Size</span>
+                </div>
                 {files.map((f, idx) => (
                   <div
                     key={idx}
-                    className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-700"
+                    className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-800 transition-all hover:bg-slate-100/80"
                   >
-                    <span className="truncate max-w-[200px] font-medium">{f.name}</span>
-                    <div className="flex items-center gap-3 shrink-0 text-slate-500">
-                      <span>~{f.pages} pages</span>
-                      <span>{(f.size / 1024).toFixed(0)} KB</span>
+                    <div className="flex items-center gap-2.5 min-w-0 pr-2">
+                      <div className="w-8 h-8 rounded-lg bg-sky-50 border border-sky-200 flex items-center justify-center text-sky-600 shrink-0">
+                        <FileText className="w-4 h-4" />
+                      </div>
+                      <div className="truncate">
+                        <p className="font-semibold text-slate-900 truncate">{f.name}</p>
+                        <p className="text-[11px] text-slate-500">
+                          ~{f.pages} {f.pages === 1 ? 'page' : 'pages'} • {(f.size / 1024).toFixed(0)} KB
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveFile(idx)}
+                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-rose-600 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-xs font-semibold transition-colors cursor-pointer"
+                        title="Remove this document"
+                        aria-label={`Remove ${f.name}`}
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>Delete</span>
+                      </button>
                     </div>
                   </div>
                 ))}
@@ -382,17 +405,17 @@ export const CustomerOrderPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Price Shield Security Pill */}
-            <div className="p-2.5 rounded-lg bg-emerald-50/70 border border-emerald-200 flex items-start gap-2 text-[11px] text-emerald-900 font-medium">
-              <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-              <span>Authoritative pricing verified by QueueX database upon token generation.</span>
+            {/* Friendly Payment Note */}
+            <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-2.5 text-xs text-slate-600">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>Pay at counter when picking up your print job (Cash / UPI / Card).</span>
             </div>
 
             {/* Submit Button */}
             <button
               type="submit"
               disabled={submitting || Object.keys(selectedItems).length === 0}
-              className="w-full py-3.5 px-4 rounded-xl bg-sky-600 hover:bg-sky-500 disabled:bg-slate-200 disabled:text-slate-400 font-bold text-sm text-white shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed active:scale-95"
+              className="w-full py-3.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 disabled:bg-slate-200 disabled:text-slate-400 font-bold text-sm text-white shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed active:scale-95"
             >
               {submitting ? (
                 <>
@@ -401,7 +424,7 @@ export const CustomerOrderPage: React.FC = () => {
                 </>
               ) : (
                 <>
-                  <span>Generate Queue Token</span>
+                  <span>Confirm & Get Token</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}

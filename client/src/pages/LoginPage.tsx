@@ -44,7 +44,7 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto px-4 py-6 sm:py-12 text-left">
+    <div className="max-w-md mx-auto px-4 py-6 sm:py-12 pb-24 sm:pb-12 text-left">
       
       {/* Return to Public Desk */}
       <button
@@ -53,7 +53,7 @@ export const LoginPage: React.FC = () => {
         className="inline-flex items-center gap-2 text-xs text-slate-500 hover:text-slate-900 transition-colors font-medium mb-4 sm:mb-6 cursor-pointer"
       >
         <ArrowLeft className="w-3.5 h-3.5" />
-        <span>Return to Customer Counter</span>
+        <span>Return to Order Counter</span>
       </button>
 
       {/* Main Login Card */}
@@ -61,14 +61,14 @@ export const LoginPage: React.FC = () => {
         
         {/* Card Header */}
         <div className="p-5 sm:p-8 border-b border-slate-100 bg-slate-50/50">
-          <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-sky-50 border border-sky-200 flex items-center justify-center text-sky-600 mb-3 sm:mb-4 shadow-xs">
+          <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-slate-900 flex items-center justify-center text-white mb-3 sm:mb-4 shadow-xs">
             <Lock className="w-5 h-5 sm:w-6 sm:h-6" />
           </div>
           <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900">
             Admin Login
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            Sign in with your admin credentials to access the QueueX Live Counter POS, dispatch orders, and view shop telemetry.
+            Sign in with your admin credentials to access the QueueX Live Counter POS, dispatch orders, and view shop analytics.
           </p>
         </div>
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Layers, Clock, LayoutDashboard, PlusCircle, LogOut, User, BarChart3 } from 'lucide-react';
+import { Printer, Clock, LayoutDashboard, PlusCircle, LogOut, User, BarChart3 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export const Navbar: React.FC = () => {
@@ -29,17 +29,14 @@ export const Navbar: React.FC = () => {
         
         {/* Brand */}
         <Link to="/" className="flex items-center gap-3 group">
-          <div className="w-9 h-9 rounded-lg bg-sky-50 border border-sky-200 flex items-center justify-center text-sky-600 group-hover:bg-sky-100 transition-all">
-            <Layers className="w-5 h-5" />
+          <div className="w-9 h-9 rounded-xl bg-slate-900 flex items-center justify-center text-white shadow-xs group-hover:bg-slate-800 transition-all">
+            <Printer className="w-5 h-5" />
           </div>
           <div>
             <div className="flex items-center gap-1.5">
               <span className="font-extrabold text-xl tracking-tight text-slate-900">QueueX</span>
-              <span className="text-[10px] uppercase bg-sky-50 text-sky-700 px-1.5 py-0.5 rounded border border-sky-200 font-bold">
-                PRO
-              </span>
             </div>
-            <p className="text-[11px] text-slate-500 hidden sm:block font-normal">Smart Counter & Queue Dispatch</p>
+            <p className="text-[11px] text-slate-500 hidden sm:block font-medium">Print & Xerox Counter</p>
           </div>
         </Link>
 
@@ -53,9 +50,9 @@ export const Navbar: React.FC = () => {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                   isActive
-                    ? 'bg-slate-900 text-white shadow-xs font-semibold'
+                    ? 'bg-slate-900 text-white shadow-xs'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
@@ -66,14 +63,14 @@ export const Navbar: React.FC = () => {
           })}
         </nav>
 
-        {/* Right Action: Auth Status or Live Pill */}
+        {/* Right Action: Auth Status */}
         <div className="flex items-center gap-3">
           {isAuthenticated ? (
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-2 px-2.5 py-1 rounded-lg bg-slate-100 border border-slate-200 text-xs text-slate-800">
-                <User className="w-3.5 h-3.5 text-sky-600" />
+                <User className="w-3.5 h-3.5 text-slate-700" />
                 <span className="font-semibold max-w-[120px] truncate hidden sm:inline">{user?.name}</span>
-                <span className="text-[9px] uppercase px-1.5 py-0.5 rounded font-bold bg-sky-100 text-sky-800 border border-sky-200">
+                <span className="text-[9px] uppercase px-1.5 py-0.5 rounded font-bold bg-slate-200 text-slate-800 border border-slate-300">
                   ADMIN
                 </span>
               </div>
@@ -88,15 +85,6 @@ export const Navbar: React.FC = () => {
               </button>
             </div>
           ) : null}
-
-          {/* Database Live Ping */}
-          <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-[11px] text-slate-600 font-medium">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600" />
-            </span>
-            <span>Cloud DB</span>
-          </div>
         </div>
 
       </div>

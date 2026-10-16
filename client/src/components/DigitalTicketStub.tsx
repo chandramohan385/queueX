@@ -3,7 +3,7 @@ import {
   FileText,
   CheckCircle2,
   Clock,
-  Cpu,
+  RefreshCw,
   User,
   Phone,
   Calendar,
@@ -27,10 +27,10 @@ export const DigitalTicketStub: React.FC<DigitalTicketStubProps> = ({ order }) =
   const [previewFile, setPreviewFile] = useState<OrderFile | null>(null);
 
   const steps = [
-    { key: 'QUEUED', label: 'Ticket Issued', desc: 'Order logged at counter', icon: Clock },
-    { key: 'PROCESSING', label: 'In Production', desc: 'Printing & finishing job', icon: Cpu },
-    { key: 'READY', label: 'Ready for Pickup', desc: 'Waiting at pickup shelf', icon: CheckCircle2 },
-    { key: 'COMPLETED', label: 'Collected', desc: 'Job settled & completed', icon: Printer },
+    { key: 'QUEUED', label: 'Order Placed', desc: 'Logged in queue', icon: Clock },
+    { key: 'PROCESSING', label: 'Printing', desc: 'Job being printed', icon: RefreshCw },
+    { key: 'READY', label: 'Ready for Pickup', desc: 'Waiting at pickup counter', icon: CheckCircle2 },
+    { key: 'COMPLETED', label: 'Completed', desc: 'Collected at counter', icon: Printer },
   ];
 
   const getStepIndex = (status: string) => {

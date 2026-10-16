@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import {
-  Clock,
   Printer,
   ChevronRight,
   Phone,
@@ -205,19 +204,15 @@ export const CustomerOrdersPage: React.FC = () => {
   const pastOrders = orders.filter((o) => ['COMPLETED', 'CANCELLED'].includes(o.status));
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 sm:py-8">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 sm:py-8 pb-28 sm:pb-8">
       {/* 1. Header Section */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8 pb-5 border-b border-slate-200">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-sky-50 text-sky-700 border border-sky-200">
-              <Clock className="w-3.5 h-3.5 text-sky-600" />
-              <span>Customer Portal</span>
-            </span>
+          <div className="flex items-center gap-2 mb-1.5">
             {isLiveConnected && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                <span>Live Sync Active</span>
+                <span>Live Updates</span>
               </span>
             )}
             {notifSupported && (
@@ -254,8 +249,8 @@ export const CustomerOrdersPage: React.FC = () => {
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
             My Orders
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
-            Instant tracking for your active print jobs and tickets within the last month. No token memorization required.
+          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+            Track your active print orders and tokens in real time.
           </p>
         </div>
 

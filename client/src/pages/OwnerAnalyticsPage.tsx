@@ -129,7 +129,7 @@ export const OwnerAnalyticsPage: React.FC = () => {
   const maxTrendRevenue = analytics?.revenue_trends.reduce((max, t) => Math.max(max, Number(t.revenue)), 0) || 1;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-8 text-left">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-8 pb-28 sm:pb-8 text-left">
       
       {/* 1. Header & Navigation Controls */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8 pb-5 border-b border-slate-200">

@@ -9,12 +9,10 @@ import {
   Search,
   RefreshCw,
   Clock,
-  Cpu,
   CheckCircle2,
   IndianRupee,
   X,
   FileText,
-  Layers,
   Zap,
   Printer,
   Check,
@@ -127,14 +125,14 @@ export const OperatorQueuePage: React.FC = () => {
   const tabs = ['ALL', 'QUEUED', 'PROCESSING', 'READY', 'COMPLETED'];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-8 text-left">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-8 pb-28 sm:pb-8 text-left">
       
       {/* Header & Title */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-6 sm:mb-8">
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 text-xs mb-2 font-semibold">
-            <Layers className="w-3.5 h-3.5 text-sky-600" />
-            <span>Counter Operations POS</span>
+            <Printer className="w-3.5 h-3.5 text-slate-700" />
+            <span>Counter POS</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
             Dispatcher Queue
@@ -193,8 +191,8 @@ export const OperatorQueuePage: React.FC = () => {
 
         <div className="p-3.5 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-xs">
           <div className="flex items-center justify-between text-amber-700 mb-1 sm:mb-2">
-            <span className="text-[10px] sm:text-xs uppercase font-bold tracking-wider">Processing</span>
-            <Cpu className="w-3.5 h-3.5 sm:w-4 sm:h-4 animate-spin text-amber-600" />
+            <span className="text-[10px] sm:text-xs uppercase font-bold tracking-wider">Printing</span>
+            <Printer className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-600" />
           </div>
           <div className="text-xl sm:text-3xl font-extrabold text-amber-700 font-mono">
             {stats ? stats.processing_count : '0'}
@@ -447,7 +445,7 @@ export const OperatorQueuePage: React.FC = () => {
                       disabled={isBusy}
                       className="w-full py-2.5 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 active:scale-95 text-slate-950 font-bold text-xs transition-all shadow-xs flex items-center justify-center gap-1.5 cursor-pointer"
                     >
-                      <Cpu className="w-3.5 h-3.5" />
+                      <Printer className="w-3.5 h-3.5" />
                       <span>Start Printing</span>
                     </button>
                   )}
