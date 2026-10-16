@@ -63,7 +63,7 @@ export const App: React.FC = () => {
           {/* Footer */}
           <footer className="border-t border-slate-200 bg-white py-6 pb-24 sm:pb-6 text-center text-xs text-slate-500">
             <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-              <p>QueueX — Smart Service & Order Management Platform</p>
+              <p>© {new Date().getFullYear()} QueueX — Print & Xerox Counter</p>
               <p>
                 Developed by{' '}
                 <a

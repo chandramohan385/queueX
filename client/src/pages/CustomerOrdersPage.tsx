@@ -287,7 +287,7 @@ export const CustomerOrdersPage: React.FC = () => {
               Find Your Orders with Your Mobile Number
             </h2>
             <p className="text-xs text-slate-500 mb-5">
-              Enter your 10-digit phone number. QueueX remembers it on this device so your active tokens and 30-day history appear automatically on every visit.
+              Enter your 10-digit mobile number to view your active tokens and order history.
             </p>
 
             <form onSubmit={handleSavePhone} className="flex flex-col sm:flex-row gap-2.5 justify-center">

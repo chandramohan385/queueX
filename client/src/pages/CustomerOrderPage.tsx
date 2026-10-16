@@ -451,7 +451,7 @@ export const CustomerOrderPage: React.FC = () => {
               Step 1: Upload Your Documents
             </h1>
             <p className="text-xs sm:text-sm text-slate-500 mt-1">
-              Upload the PDF or image files you need printed. Page counts are detected automatically to calculate exact pricing.
+              Upload the documents or images you need printed.
             </p>
           </div>
 
@@ -473,9 +473,6 @@ export const CustomerOrderPage: React.FC = () => {
               </span>
               <span className="text-xs text-slate-500 mt-1 text-center">
                 Supports PDF documents, images (PNG, JPG), Word (DOCX) up to 50MB
-              </span>
-              <span className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-50 text-sky-700 text-xs font-semibold border border-sky-200">
-                ⚡ Auto page detection for PDFs
               </span>
             </label>
 
@@ -499,7 +496,7 @@ export const CustomerOrderPage: React.FC = () => {
                       <div className="truncate">
                         <p className="font-bold text-slate-900 truncate">{file.name}</p>
                         <p className="text-[11px] text-slate-500 mt-0.5">
-                          {(file.size / 1024).toFixed(0)} KB • Detected: {file.pages} {file.pages === 1 ? 'page' : 'pages'}
+                          {(file.size / 1024).toFixed(0)} KB • {file.pages} {file.pages === 1 ? 'page' : 'pages'}
                         </p>
                       </div>
                     </div>
@@ -548,7 +545,7 @@ export const CustomerOrderPage: React.FC = () => {
                   <div className="flex items-center gap-2">
                     <FileSpreadsheet className="w-4 h-4 text-sky-700" />
                     <span className="text-xs font-bold text-sky-900">
-                      Total Document Volume:
+                      Total Pages:
                     </span>
                   </div>
                   <span className="text-sm font-extrabold text-sky-950">
@@ -736,9 +733,9 @@ export const CustomerOrderPage: React.FC = () => {
                     )}
 
                     {isPrintCategory && (
-                      <span className="inline-block mt-2 text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                        Auto-scaled: {totalDocumentPages} pages × {copies} copy = {totalDocumentPages * copies} prints
-                      </span>
+                      <p className="text-[11px] text-slate-500 mt-1.5">
+                        {totalDocumentPages} pages × {copies} {copies === 1 ? 'copy' : 'copies'} ({totalDocumentPages * copies} prints)
+                      </p>
                     )}
                   </div>
 

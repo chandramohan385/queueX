@@ -145,7 +145,7 @@ export const OwnerAnalyticsPage: React.FC = () => {
             Shop Performance & Settlements
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
-            Real-time shop financial intelligence, counter rush peaks, top services, and end-of-day audit register.
+            Daily revenue, peak hours, top services, and end-of-day register settlement.
           </p>
         </div>
 
@@ -161,7 +161,7 @@ export const OwnerAnalyticsPage: React.FC = () => {
                   : 'text-slate-500 hover:text-slate-800'
               }`}
             >
-              Overview Intelligence
+              Overview & Trends
             </button>
             <button
               type="button"
@@ -249,7 +249,7 @@ export const OwnerAnalyticsPage: React.FC = () => {
           {analyticsLoading && !analytics && (
             <div className="py-24 text-center">
               <div className="w-8 h-8 border-2 border-sky-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-              <p className="text-xs text-slate-500 font-medium">Aggregating shop revenue intelligence...</p>
+              <p className="text-xs text-slate-500 font-medium">Loading revenue data...</p>
             </div>
           )}
 
