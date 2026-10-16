@@ -65,10 +65,10 @@ export const LoginPage: React.FC = () => {
             <Lock className="w-5 h-5 sm:w-6 sm:h-6" />
           </div>
           <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900">
-            Staff & Owner Login
+            Admin Login
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            Sign in to access the QueueX Live Counter POS, dispatch orders, and view shop telemetry.
+            Sign in with your admin credentials to access the QueueX Live Counter POS, dispatch orders, and view shop telemetry.
           </p>
         </div>
 
@@ -87,14 +87,14 @@ export const LoginPage: React.FC = () => {
             {/* Email Field */}
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                Staff Email
+                Admin Email
               </label>
               <div className="relative">
                 <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="email"
                   required
-                  placeholder="name@queuex.com"
+                  placeholder="admin@queuex.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-slate-50 border border-slate-300 text-base sm:text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition-all font-medium"
@@ -141,7 +141,7 @@ export const LoginPage: React.FC = () => {
               ) : (
                 <>
                   <ShieldCheck className="w-4 h-4 text-sky-400" />
-                  <span>Sign In to POS</span>
+                  <span>Sign In as Admin</span>
                 </>
               )}
             </button>
@@ -150,27 +150,21 @@ export const LoginPage: React.FC = () => {
           {/* Quick Demo Fill Credentials */}
           <div className="pt-4 border-t border-slate-200">
             <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-2">
-              Quick Demo Fill Credentials:
+              Quick Admin Demo Fill:
             </span>
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={() => handleFillCredentials('admin@queuex.com', 'QueueX@2026')}
-                className="px-3 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 border border-slate-200 text-left transition-colors"
-              >
-                <span className="block text-[11px] font-bold text-slate-900">Admin (Owner)</span>
-                <span className="block text-[10px] text-slate-500 truncate">admin@queuex.com</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleFillCredentials('staff@queuex.com', 'Staff@2026')}
-                className="px-3 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 border border-slate-200 text-left transition-colors"
-              >
-                <span className="block text-[11px] font-bold text-slate-900">Staff (Operator)</span>
-                <span className="block text-[10px] text-slate-500 truncate">staff@queuex.com</span>
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => handleFillCredentials('admin@queuex.com', 'QueueX@2026')}
+              className="w-full px-3 py-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 border border-slate-200 text-left transition-colors cursor-pointer"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="block text-[11px] font-bold text-slate-900">Admin Account</span>
+                  <span className="block text-[10px] text-slate-500">admin@queuex.com</span>
+                </div>
+                <span className="text-[10px] bg-sky-100 text-sky-700 font-semibold px-2 py-0.5 rounded">Auto-fill</span>
+              </div>
+            </button>
           </div>
 
         </div>

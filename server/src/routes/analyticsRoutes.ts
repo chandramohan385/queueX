@@ -4,9 +4,8 @@ import { requireAuth, requireRole } from '../middleware/authMiddleware';
 
 const router = Router();
 
-// All analytics routes require authenticated OWNER role
+// All analytics routes require authenticated admin
 router.use(requireAuth);
-router.use(requireRole(['OWNER']));
 
 /**
  * Helper to build date range SQL filter clause

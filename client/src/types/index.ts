@@ -66,7 +66,7 @@ export interface StaffUser {
   id: number;
   name: string;
   email: string;
-  role: 'OWNER' | 'OPERATOR';
+  role: 'ADMIN' | 'OWNER' | 'OPERATOR' | string;
 }
 
 export interface HourlyVolume {

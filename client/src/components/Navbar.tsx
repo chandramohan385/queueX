@@ -1,33 +1,27 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Layers, Clock, LayoutDashboard, PlusCircle, LogOut, User, Lock, BarChart3 } from 'lucide-react';
+import { Layers, Clock, LayoutDashboard, PlusCircle, LogOut, User, BarChart3 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export const Navbar: React.FC = () => {
   const location = useLocation();
   const { user, isAuthenticated, logout } = useAuth();
-  const isOwner = user?.role === 'OWNER';
 
-  const navItems = [
-    { label: 'Create Order', path: '/', icon: PlusCircle },
-    { label: 'My Orders', path: '/my-orders', icon: Clock },
-    {
-      label: 'Operator POS',
-      path: '/admin',
-      icon: LayoutDashboard,
-      requiresAuth: true,
-    },
-    ...(isOwner
-      ? [
-          {
-            label: 'Analytics',
-            path: '/admin/analytics',
-            icon: BarChart3,
-            requiresAuth: true,
-          },
-        ]
-      : []),
-  ];
+  // Navigation items:
+  // If authenticated as Admin, show all 4 management links
+  // If not authenticated (Customer public view), show ONLY customer links: Create Order & My Orders
+  // ZERO login buttons, ZERO lock icons, ZERO staff/operator cues on the customer public view.
+  const navItems = isAuthenticated
+    ? [
+        { label: 'Create Order', path: '/', icon: PlusCircle },
+        { label: 'My Orders', path: '/my-orders', icon: Clock },
+        { label: 'Counter POS', path: '/admin', icon: LayoutDashboard },
+        { label: 'Analytics', path: '/admin/analytics', icon: BarChart3 },
+      ]
+    : [
+        { label: 'Create Order', path: '/', icon: PlusCircle },
+        { label: 'My Orders', path: '/my-orders', icon: Clock },
+      ];
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/90 backdrop-blur-md shadow-xs">
@@ -67,9 +61,6 @@ export const Navbar: React.FC = () => {
               >
                 <Icon className="w-3.5 h-3.5" />
                 <span>{item.label}</span>
-                {item.requiresAuth && !isAuthenticated && (
-                  <Lock className="w-2.5 h-2.5 text-slate-400" />
-                )}
               </Link>
             );
           })}
@@ -82,35 +73,21 @@ export const Navbar: React.FC = () => {
               <div className="flex items-center gap-2 px-2.5 py-1 rounded-lg bg-slate-100 border border-slate-200 text-xs text-slate-800">
                 <User className="w-3.5 h-3.5 text-sky-600" />
                 <span className="font-semibold max-w-[120px] truncate hidden sm:inline">{user?.name}</span>
-                <span
-                  className={`text-[9px] uppercase px-1.5 py-0.5 rounded font-bold ${
-                    user?.role === 'OWNER'
-                      ? 'bg-sky-100 text-sky-800 border border-sky-200'
-                      : 'bg-emerald-100 text-emerald-800 border border-emerald-200'
-                  }`}
-                >
-                  {user?.role}
+                <span className="text-[9px] uppercase px-1.5 py-0.5 rounded font-bold bg-sky-100 text-sky-800 border border-sky-200">
+                  ADMIN
                 </span>
               </div>
 
               <button
                 type="button"
                 onClick={logout}
-                className="p-1.5 rounded-lg border border-slate-200 hover:bg-rose-50 hover:border-rose-200 text-slate-500 hover:text-rose-600 transition-colors"
+                className="p-1.5 rounded-lg border border-slate-200 hover:bg-rose-50 hover:border-rose-200 text-slate-500 hover:text-rose-600 transition-colors cursor-pointer"
                 title="Sign out"
               >
                 <LogOut className="w-3.5 h-3.5" />
               </button>
             </div>
-          ) : (
-            <Link
-              to="/login"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 transition-colors shadow-xs"
-            >
-              <Lock className="w-3.5 h-3.5 text-slate-500" />
-              <span>Staff Login</span>
-            </Link>
-          )}
+          ) : null}
 
           {/* Database Live Ping */}
           <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-[11px] text-slate-600 font-medium">
@@ -126,7 +103,7 @@ export const Navbar: React.FC = () => {
 
       {/* Mobile Bottom Navigation Dock (Visible only on mobile devices) */}
       <div className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 safe-area-bottom shadow-lg">
-        <div className={`grid ${navItems.length === 4 ? 'grid-cols-4' : 'grid-cols-3'} h-14`}>
+        <div className={`grid ${navItems.length === 4 ? 'grid-cols-4' : 'grid-cols-2'} h-14`}>
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive =
@@ -141,12 +118,7 @@ export const Navbar: React.FC = () => {
                   isActive ? 'text-sky-600 font-bold' : 'text-slate-500 hover:text-slate-800 font-medium'
                 }`}
               >
-                <div className="relative">
-                  <Icon className={`w-5 h-5 ${isActive ? 'text-sky-600 stroke-[2.5]' : 'text-slate-500'}`} />
-                  {item.requiresAuth && !isAuthenticated && (
-                    <Lock className="w-2.5 h-2.5 text-slate-400 absolute -top-1 -right-2" />
-                  )}
-                </div>
+                <Icon className={`w-5 h-5 ${isActive ? 'text-sky-600 stroke-[2.5]' : 'text-slate-500'}`} />
                 <span className="text-[10px] tracking-tight">{item.label}</span>
               </Link>
             );

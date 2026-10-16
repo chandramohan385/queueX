@@ -135,11 +135,11 @@ export const OwnerAnalyticsPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8 pb-5 border-b border-slate-200">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Owner Access Verified</span>
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-sky-50 text-sky-800 border border-sky-200">
+              <ShieldCheck className="w-3.5 h-3.5 text-sky-600" />
+              <span>Admin Access Verified</span>
             </span>
-            <span className="text-[11px] font-medium text-slate-400">Strict Role Enforced</span>
+            <span className="text-[11px] font-medium text-slate-400">Authenticated Admin</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
             Shop Performance & Settlements
