@@ -24,7 +24,7 @@ const createOrderItemSchema = z.object({
 
 const createOrderFileSchema = z.object({
   file_name: z.string().min(1),
-  file_url: z.string().url(),
+  file_url: z.string().min(1),
   file_size_bytes: z.number().int().nonnegative().optional(),
   mime_type: z.string().optional(),
   page_count: z.number().int().positive().optional().default(1),

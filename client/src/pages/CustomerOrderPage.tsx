@@ -12,14 +12,16 @@ export const CustomerOrderPage: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Form State - pre-filled from local storage if previously used
-  const [customerName, setCustomerName] = useState(() => localStorage.getItem('queuex_customer_name') || '');
-  const [customerPhone, setCustomerPhone] = useState(() => localStorage.getItem('queuex_customer_phone') || '');
+  // Form State - blank by default for every new order
+  const [customerName, setCustomerName] = useState('');
+  const [customerPhone, setCustomerPhone] = useState('');
   const [notes, setNotes] = useState('');
   const [selectedItems, setSelectedItems] = useState<Record<number, number>>({});
   
-  // File Upload State
-  const [files, setFiles] = useState<Array<{ name: string; size: number; pages: number }>>([]);
+  // File Upload State (holds real file data for preview & download)
+  const [files, setFiles] = useState<
+    Array<{ name: string; size: number; pages: number; mimeType: string; dataUrl: string }>
+  >([]);
   const [categoryFilter, setCategoryFilter] = useState<string>('ALL');
 
   useEffect(() => {
@@ -72,13 +74,25 @@ export const CustomerOrderPage: React.FC = () => {
     const uploaded = e.target.files;
     if (!uploaded || uploaded.length === 0) return;
 
-    const newFiles = Array.from(uploaded).map((file) => ({
-      name: file.name,
-      size: file.size,
-      pages: Math.max(1, Math.round(file.size / 45000)),
-    }));
-
-    setFiles((prev) => [...prev, ...newFiles]);
+    Array.from(uploaded).forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const dataUrl = (reader.result as string) || '';
+        setFiles((prev) => [
+          ...prev,
+          {
+            name: file.name,
+            size: file.size,
+            pages: Math.max(1, Math.round(file.size / 45000)),
+            mimeType: file.type || 'application/pdf',
+            dataUrl,
+          },
+        ]);
+      };
+      reader.readAsDataURL(file);
+    });
+    // Reset file input so re-selecting works seamlessly
+    e.target.value = '';
   };
 
   const handleRemoveFile = (indexToRemove: number) => {
@@ -130,16 +144,15 @@ export const CustomerOrderPage: React.FC = () => {
         items,
         files: files.map((f) => ({
           file_name: f.name,
-          file_url: `https://storage.queuex.local/uploads/${encodeURIComponent(f.name)}`,
+          file_url: f.dataUrl,
           file_size_bytes: f.size,
-          mime_type: 'application/pdf',
+          mime_type: f.mimeType,
           page_count: f.pages,
         })),
       };
 
       const createdOrder = await createOrder(payload);
       localStorage.setItem('queuex_customer_phone', customerPhone.trim());
-      localStorage.setItem('queuex_customer_name', customerName.trim());
       navigate(`/my-orders?token=${encodeURIComponent(createdOrder.token_number)}`);
     } catch (err: any) {
       setError(err.message || 'Failed to submit order');
@@ -351,7 +364,7 @@ export const CustomerOrderPage: React.FC = () => {
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Chandra Mohan"
+                  placeholder="Enter full name"
                   value={customerName}
                   onChange={(e) => setCustomerName(e.target.value)}
                   className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-base sm:text-sm text-slate-900 focus:bg-white focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
@@ -363,7 +376,7 @@ export const CustomerOrderPage: React.FC = () => {
                 <input
                   type="tel"
                   required
-                  placeholder="e.g. 9392306031"
+                  placeholder="Enter 10-digit mobile number"
                   value={customerPhone}
                   onChange={(e) => setCustomerPhone(e.target.value)}
                   className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-base sm:text-sm text-slate-900 focus:bg-white focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
@@ -371,10 +384,10 @@ export const CustomerOrderPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-xs uppercase text-slate-600 mb-1 font-bold tracking-wider">Special Notes / Instructions</label>
+                <label className="block text-xs uppercase text-slate-600 mb-1 font-bold tracking-wider">Special Notes / Instructions (Optional)</label>
                 <textarea
                   rows={2}
-                  placeholder="e.g. Color print on glossy paper, duplex"
+                  placeholder="e.g. Color print, duplex, glossy paper..."
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-base sm:text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
@@ -391,7 +404,7 @@ export const CustomerOrderPage: React.FC = () => {
                 return (
                   <div key={idStr} className="flex justify-between items-center text-slate-700">
                     <span className="truncate mr-2 font-medium">{s.name} × {qty}</span>
-                    <span className="font-bold text-slate-900 font-mono">₹{cost.toFixed(2)}</span>
+                    <span className="font-bold text-slate-900">₹{cost.toFixed(2)}</span>
                   </div>
                 );
               })}
@@ -400,7 +413,7 @@ export const CustomerOrderPage: React.FC = () => {
             {/* Live Total Display */}
             <div className="pt-4 border-t border-slate-200 flex items-baseline justify-between">
               <span className="text-xs uppercase text-slate-500 font-bold tracking-wider">Estimated Total</span>
-              <div className="text-2xl font-extrabold text-emerald-600 font-mono">
+              <div className="text-2xl font-extrabold text-emerald-600">
                 ₹{estimatedTotal.toFixed(2)}
               </div>
             </div>
@@ -443,7 +456,7 @@ export const CustomerOrderPage: React.FC = () => {
             <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">
               {totalItemsCount} {totalItemsCount === 1 ? 'item' : 'items'}
             </span>
-            <span className="text-lg font-extrabold text-emerald-600 font-mono">
+            <span className="text-lg font-extrabold text-emerald-600">
               ₹{estimatedTotal.toFixed(2)}
             </span>
           </div>

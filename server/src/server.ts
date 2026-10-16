@@ -32,8 +32,9 @@ app.use(
   })
 );
 
-// Middleware 2: JSON Body Parser - Parses incoming request bodies containing application/json
-app.use(express.json());
+// Middleware 2: JSON Body Parser - Parses incoming request bodies (supports document uploads up to 50MB)
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // API Routes
 app.use('/api/auth', authRoutes);

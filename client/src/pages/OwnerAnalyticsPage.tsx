@@ -263,7 +263,7 @@ export const OwnerAnalyticsPage: React.FC = () => {
                     <span className="text-[10px] sm:text-xs uppercase font-bold tracking-wider">Settled Gross Revenue</span>
                     <DollarSign className="w-4 h-4 text-emerald-600" />
                   </div>
-                  <div className="text-xl sm:text-3xl font-extrabold text-slate-900 font-mono tracking-tight">
+                  <div className="text-xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
                     ₹{Number(analytics.metrics.total_revenue).toFixed(2)}
                   </div>
                   <div className="flex items-center gap-1 text-[11px] text-emerald-700 font-semibold mt-1">
@@ -278,7 +278,7 @@ export const OwnerAnalyticsPage: React.FC = () => {
                     <span className="text-[10px] sm:text-xs uppercase font-bold tracking-wider">Total Orders</span>
                     <ShoppingBag className="w-4 h-4 text-sky-600" />
                   </div>
-                  <div className="text-xl sm:text-3xl font-extrabold text-slate-900 font-mono tracking-tight">
+                  <div className="text-xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
                     {analytics.metrics.total_orders}
                   </div>
                   <span className="text-[11px] text-slate-500 mt-1 block">
@@ -292,7 +292,7 @@ export const OwnerAnalyticsPage: React.FC = () => {
                     <span className="text-[10px] sm:text-xs uppercase font-bold tracking-wider">Avg Ticket Size</span>
                     <Award className="w-4 h-4 text-amber-600" />
                   </div>
-                  <div className="text-xl sm:text-3xl font-extrabold text-slate-900 font-mono tracking-tight">
+                  <div className="text-xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
                     ₹{Number(analytics.metrics.avg_order_value).toFixed(2)}
                   </div>
                   <span className="text-[11px] text-slate-500 mt-1 block">
@@ -306,7 +306,7 @@ export const OwnerAnalyticsPage: React.FC = () => {
                     <span className="text-[10px] sm:text-xs uppercase font-bold tracking-wider">Order Completion</span>
                     <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                   </div>
-                  <div className="text-xl sm:text-3xl font-extrabold text-emerald-600 font-mono tracking-tight">
+                  <div className="text-xl sm:text-3xl font-extrabold text-emerald-600 tracking-tight">
                     {analytics.metrics.total_orders > 0
                       ? `${Math.round((analytics.metrics.completed_orders / analytics.metrics.total_orders) * 100)}%`
                       : '100%'}
@@ -361,7 +361,7 @@ export const OwnerAnalyticsPage: React.FC = () => {
 
                               {/* Number on top if > 0 */}
                               {item.order_count > 0 && (
-                                <span className="text-[10px] font-bold font-mono text-slate-600 mb-1">
+                                <span className="text-[10px] font-bold text-slate-600 mb-1">
                                   {item.order_count}
                                 </span>
                               )}
@@ -442,7 +442,7 @@ export const OwnerAnalyticsPage: React.FC = () => {
                                   </span>
                                 </div>
                                 <div className="text-right shrink-0">
-                                  <span className="font-extrabold text-slate-900 font-mono">
+                                  <span className="font-extrabold text-slate-900">
                                     ₹{Number(srv.total_revenue).toFixed(2)}
                                   </span>
                                 </div>
@@ -456,7 +456,7 @@ export const OwnerAnalyticsPage: React.FC = () => {
                                     style={{ width: `${Math.min(Math.max(revShare, 5), 100)}%` }}
                                   />
                                 </div>
-                                <span className="text-[10px] text-slate-400 font-mono shrink-0">
+                                <span className="text-[10px] text-slate-400 shrink-0">
                                   {srv.total_quantity} {srv.unit}s ({revShare}%)
                                 </span>
                               </div>
@@ -505,7 +505,7 @@ export const OwnerAnalyticsPage: React.FC = () => {
                             {item.formatted_date}: ₹{Number(item.revenue).toFixed(2)} ({item.order_count} orders)
                           </div>
 
-                          <span className="text-[10px] font-bold font-mono text-slate-600 mb-1">
+                          <span className="text-[10px] font-bold text-slate-600 mb-1">
                             ₹{Math.round(Number(item.revenue))}
                           </span>
 
@@ -605,7 +605,7 @@ export const OwnerAnalyticsPage: React.FC = () => {
                   <span className="text-[10px] sm:text-xs uppercase font-bold text-slate-400 block mb-1">
                     Settled Cash/UPI
                   </span>
-                  <span className="text-xl sm:text-2xl font-extrabold text-emerald-600 font-mono">
+                  <span className="text-xl sm:text-2xl font-extrabold text-emerald-600">
                     ₹{Number(settlement.settled_revenue).toFixed(2)}
                   </span>
                   <span className="text-[10px] text-slate-400 block mt-1">
@@ -617,7 +617,7 @@ export const OwnerAnalyticsPage: React.FC = () => {
                   <span className="text-[10px] sm:text-xs uppercase font-bold text-slate-400 block mb-1">
                     Pending Counter Due
                   </span>
-                  <span className="text-xl sm:text-2xl font-extrabold text-amber-600 font-mono">
+                  <span className="text-xl sm:text-2xl font-extrabold text-amber-600">
                     ₹{Number(settlement.pending_revenue).toFixed(2)}
                   </span>
                   <span className="text-[10px] text-slate-400 block mt-1">
@@ -629,7 +629,7 @@ export const OwnerAnalyticsPage: React.FC = () => {
                   <span className="text-[10px] sm:text-xs uppercase font-bold text-slate-400 block mb-1">
                     Token Range (Seq)
                   </span>
-                  <span className="text-lg sm:text-xl font-extrabold text-slate-900 font-mono">
+                  <span className="text-lg sm:text-xl font-extrabold text-slate-900">
                     {settlement.token_start ? `${settlement.token_start} → ${settlement.token_end}` : 'None'}
                   </span>
                   <span className="text-[10px] text-slate-400 block mt-1">
@@ -641,7 +641,7 @@ export const OwnerAnalyticsPage: React.FC = () => {
                   <span className="text-[10px] sm:text-xs uppercase font-bold text-slate-400 block mb-1">
                     Gross Day Value
                   </span>
-                  <span className="text-xl sm:text-2xl font-extrabold text-slate-900 font-mono">
+                  <span className="text-xl sm:text-2xl font-extrabold text-slate-900">
                     ₹{(Number(settlement.settled_revenue) + Number(settlement.pending_revenue)).toFixed(2)}
                   </span>
                   <span className="text-[10px] text-slate-400 block mt-1">
@@ -694,10 +694,10 @@ export const OwnerAnalyticsPage: React.FC = () => {
                                 {item.category}
                               </span>
                             </td>
-                            <td className="py-3 px-4 text-slate-600 font-mono">
+                            <td className="py-3 px-4 text-slate-600">
                               {item.quantity} {item.unit}s
                             </td>
-                            <td className="py-3 px-4 text-right font-extrabold text-slate-900 font-mono">
+                            <td className="py-3 px-4 text-right font-extrabold text-slate-900">
                               ₹{Number(item.revenue).toFixed(2)}
                             </td>
                           </tr>

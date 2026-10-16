@@ -183,7 +183,7 @@ export const OperatorQueuePage: React.FC = () => {
             <span className="text-[10px] sm:text-xs uppercase font-bold tracking-wider">In Queue</span>
             <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400" />
           </div>
-          <div className="text-xl sm:text-3xl font-extrabold text-slate-900 font-mono">
+          <div className="text-xl sm:text-3xl font-extrabold text-slate-900">
             {stats ? stats.queued_count : '0'}
           </div>
           <span className="text-[10px] sm:text-[11px] text-slate-400 hidden xs:inline">Awaiting production</span>
@@ -194,7 +194,7 @@ export const OperatorQueuePage: React.FC = () => {
             <span className="text-[10px] sm:text-xs uppercase font-bold tracking-wider">Printing</span>
             <Printer className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-600" />
           </div>
-          <div className="text-xl sm:text-3xl font-extrabold text-amber-700 font-mono">
+          <div className="text-xl sm:text-3xl font-extrabold text-amber-700">
             {stats ? stats.processing_count : '0'}
           </div>
           <span className="text-[10px] sm:text-[11px] text-slate-400 hidden xs:inline">Printing & binding</span>
@@ -205,7 +205,7 @@ export const OperatorQueuePage: React.FC = () => {
             <span className="text-[10px] sm:text-xs uppercase font-bold tracking-wider">Ready</span>
             <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600" />
           </div>
-          <div className="text-xl sm:text-3xl font-extrabold text-emerald-700 font-mono">
+          <div className="text-xl sm:text-3xl font-extrabold text-emerald-700">
             {stats ? stats.ready_count : '0'}
           </div>
           <span className="text-[10px] sm:text-[11px] text-slate-400 hidden xs:inline">Ready for pickup</span>
@@ -216,7 +216,7 @@ export const OperatorQueuePage: React.FC = () => {
             <span className="text-[10px] sm:text-xs uppercase font-bold tracking-wider">Revenue</span>
             <IndianRupee className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-sky-600" />
           </div>
-          <div className="text-xl sm:text-3xl font-extrabold text-slate-900 font-mono">
+          <div className="text-xl sm:text-3xl font-extrabold text-slate-900">
             ₹{stats ? parseFloat(String(stats.today_revenue)).toFixed(2) : '0.00'}
           </div>
           <span className="text-[10px] sm:text-[11px] text-slate-400 hidden xs:inline">
@@ -317,13 +317,13 @@ export const OperatorQueuePage: React.FC = () => {
                       {/* Summary */}
                       <td className="py-3.5 px-4 text-slate-600">
                         <span>{order.item_count || 1} items</span>
-                        {order.file_count ? (
+                        {Number(order.file_count) > 0 ? (
                           <span className="ml-2 text-sky-600 font-semibold">({order.file_count} files)</span>
                         ) : null}
                       </td>
 
                       {/* Amount */}
-                      <td className="py-3.5 px-4 font-extrabold text-slate-900 font-mono">
+                      <td className="py-3.5 px-4 font-extrabold text-slate-900">
                         ₹{parseFloat(String(order.total_amount)).toFixed(2)}
                       </td>
 
@@ -427,11 +427,11 @@ export const OperatorQueuePage: React.FC = () => {
                     <span className="text-slate-500 text-[11px] font-mono">{order.customer_phone}</span>
                   </div>
                   <div className="text-right">
-                    <span className="font-mono font-extrabold text-slate-900 text-sm block">
+                    <span className="font-extrabold text-slate-900 text-sm block">
                       ₹{parseFloat(String(order.total_amount)).toFixed(2)}
                     </span>
                     <span className="text-[11px] text-slate-500">
-                      {order.item_count || 1} items {order.file_count ? `(${order.file_count} files)` : ''}
+                      {order.item_count || 1} items {Number(order.file_count) > 0 ? `(${order.file_count} files)` : ''}
                     </span>
                   </div>
                 </div>
@@ -566,24 +566,45 @@ export const OperatorQueuePage: React.FC = () => {
                   </h3>
                   <div className="space-y-2">
                     {selectedOrder.files.map((f, idx) => (
-                      <button
+                      <div
                         key={idx}
-                        type="button"
-                        onClick={() => setPreviewFile(f)}
-                        className="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-sky-300 hover:bg-sky-50/40 flex items-center justify-between text-xs transition-all cursor-pointer text-left group"
-                        title="Click to preview document in-browser"
+                        className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs transition-all hover:bg-slate-100/70"
                       >
-                        <div className="flex items-center gap-2 truncate">
-                          <FileText className="w-4 h-4 text-sky-600 shrink-0 group-hover:scale-110 transition-transform" />
-                          <span className="truncate text-slate-800 font-medium group-hover:text-sky-700">{f.file_name}</span>
+                        <button
+                          type="button"
+                          onClick={() => setPreviewFile(f)}
+                          className="flex items-center gap-2.5 truncate text-left cursor-pointer hover:text-sky-600 transition-colors flex-1 min-w-0 mr-2"
+                          title="Click to preview file"
+                        >
+                          <FileText className="w-4 h-4 text-sky-600 shrink-0" />
+                          <div className="truncate">
+                            <span className="truncate font-semibold text-slate-900 block">{f.file_name}</span>
+                            <span className="text-[11px] text-slate-400">
+                              {f.page_count ? `${f.page_count} pages` : 'Document'} {f.file_size_bytes ? `• ${(f.file_size_bytes / 1024).toFixed(0)} KB` : ''}
+                            </span>
+                          </div>
+                        </button>
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => setPreviewFile(f)}
+                            className="px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 text-[11px] font-semibold flex items-center gap-1 cursor-pointer transition-colors shadow-xs"
+                            title="Preview file in browser"
+                          >
+                            <Eye className="w-3.5 h-3.5 text-slate-500" />
+                            <span>View</span>
+                          </button>
+                          <a
+                            href={f.file_url}
+                            download={f.file_name}
+                            className="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-[11px] font-semibold flex items-center gap-1 cursor-pointer transition-colors shadow-xs"
+                            title="Download file to device"
+                          >
+                            <FileDown className="w-3.5 h-3.5" />
+                            <span>Download</span>
+                          </a>
                         </div>
-                        <div className="flex items-center gap-2 shrink-0 ml-2">
-                          <span className="text-[11px] text-slate-500 font-semibold">
-                            {f.page_count ? `${f.page_count} pgs` : 'Document'}
-                          </span>
-                          <Eye className="w-3.5 h-3.5 text-slate-400 group-hover:text-sky-600" />
-                        </div>
-                      </button>
+                      </div>
                     ))}
                   </div>
                 </div>

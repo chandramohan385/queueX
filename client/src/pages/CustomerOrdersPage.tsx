@@ -341,15 +341,12 @@ export const CustomerOrdersPage: React.FC = () => {
             </div>
             <div>
               <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-                <span className="text-xs font-bold text-slate-900 font-mono">
+                <span className="text-sm font-bold text-slate-900">
                   +91 {savedPhone}
                 </span>
-                <span className="text-[9px] sm:text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200">
-                  Device Remembered
-                </span>
               </div>
-              <p className="text-[11px] text-slate-500 mt-0.5">
-                Default: Orders within last 30 days (1 month).
+              <p className="text-xs text-slate-500 mt-0.5">
+                Orders for this mobile number
               </p>
             </div>
           </div>
@@ -475,11 +472,11 @@ export const CustomerOrdersPage: React.FC = () => {
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" />
                   <h2 className="text-sm font-bold uppercase tracking-wider text-slate-800">
-                    Active Counter Jobs ({activeOrders.length})
+                    Active Orders ({activeOrders.length})
                   </h2>
                 </div>
-                <span className="text-[11px] text-slate-500 font-medium">
-                  Auto-updating via live counter telemetry
+                <span className="text-xs text-slate-500 font-medium">
+                  Live counter updates
                 </span>
               </div>
 
@@ -506,7 +503,7 @@ export const CustomerOrdersPage: React.FC = () => {
                             <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block">
                               Token Number
                             </span>
-                            <span className="font-mono text-xl font-extrabold text-slate-900 tracking-tight">
+                            <span className="text-xl font-extrabold text-slate-900 tracking-tight">
                               #{order.token_number}
                             </span>
                           </div>
@@ -518,8 +515,8 @@ export const CustomerOrdersPage: React.FC = () => {
                           <div className="flex items-center justify-between text-[11px] font-semibold text-slate-600 mb-1.5">
                             <span>Stage:</span>
                             <span className={isReady ? 'text-emerald-700 font-bold' : isProcessing ? 'text-amber-700 font-bold' : 'text-slate-700'}>
-                              {order.status === 'QUEUED' && '1. Ticket Issued'}
-                              {order.status === 'PROCESSING' && '2. In Production'}
+                              {order.status === 'QUEUED' && '1. Order Placed'}
+                              {order.status === 'PROCESSING' && '2. Printing'}
                               {order.status === 'READY' && '3. Ready for Pickup!'}
                             </span>
                           </div>
@@ -548,7 +545,7 @@ export const CustomerOrdersPage: React.FC = () => {
                                   <span className="truncate max-w-[180px] font-medium text-slate-800">
                                     {item.service_name || `Service #${item.service_id}`}
                                   </span>
-                                  <span className="text-slate-500 font-mono">
+                                  <span className="text-slate-500">
                                     x{item.quantity} · ₹{Number(item.subtotal).toFixed(2)}
                                   </span>
                                 </div>
@@ -653,10 +650,10 @@ export const CustomerOrdersPage: React.FC = () => {
 
                       <div className="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
                         <div className="text-left sm:text-right">
-                          <span className="text-sm font-extrabold text-slate-900 block font-mono">
+                          <span className="text-sm font-extrabold text-slate-900 block">
                             ₹{Number(order.total_amount).toFixed(2)}
                           </span>
-                          <span className="text-[10px] text-slate-400 font-mono">
+                          <span className="text-[10px] text-slate-400 font-medium">
                             {order.payment_status}
                           </span>
                         </div>

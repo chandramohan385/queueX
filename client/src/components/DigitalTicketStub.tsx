@@ -100,7 +100,7 @@ export const DigitalTicketStub: React.FC<DigitalTicketStubProps> = ({ order }) =
             {/* Amount & Payment Status */}
             <div className="text-left sm:text-right">
               <span className="text-[10px] sm:text-xs uppercase text-slate-400 font-bold tracking-wider">Estimated Total</span>
-              <div className="text-2xl sm:text-3xl font-extrabold text-emerald-600 font-mono">
+              <div className="text-2xl sm:text-3xl font-extrabold text-emerald-600">
                 ₹{parseFloat(String(order.total_amount)).toFixed(2)}
               </div>
               
@@ -222,7 +222,7 @@ export const DigitalTicketStub: React.FC<DigitalTicketStubProps> = ({ order }) =
                       {item.quantity} units @ ₹{parseFloat(String(item.unit_price)).toFixed(2)}
                     </span>
                   </div>
-                  <span className="font-bold text-slate-900 font-mono">
+                  <span className="font-bold text-slate-900">
                     ₹{parseFloat(String(item.subtotal)).toFixed(2)}
                   </span>
                 </div>
