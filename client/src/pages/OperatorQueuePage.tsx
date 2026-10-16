@@ -5,6 +5,7 @@ import { StatusBadge } from '../components/StatusBadge';
 import { generateThermalReceipt } from '../utils/receiptGenerator';
 import { printThermalReceiptDirect } from '../utils/thermalPrinter';
 import { DocumentPreviewModal } from '../components/DocumentPreviewModal';
+import { printDocument } from '../utils/fileUtils';
 import {
   Search,
   RefreshCw,
@@ -585,6 +586,15 @@ export const OperatorQueuePage: React.FC = () => {
                           </div>
                         </button>
                         <div className="flex items-center gap-1.5 shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => printDocument(f.file_url, f.file_name, f.mime_type)}
+                            className="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-semibold flex items-center gap-1 cursor-pointer transition-colors shadow-xs"
+                            title="Print this document directly"
+                          >
+                            <Printer className="w-3.5 h-3.5" />
+                            <span>Print</span>
+                          </button>
                           <button
                             type="button"
                             onClick={() => setPreviewFile(f)}
