@@ -66,7 +66,8 @@ export const OperatorQueuePage: React.FC = () => {
     const token = getAuthToken();
     if (!token) return;
 
-    const sseUrl = `/api/events/orders?token=${encodeURIComponent(token)}`;
+    const backendBase = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace(/\/$/, '') : '';
+    const sseUrl = `${backendBase}/api/events/orders?token=${encodeURIComponent(token)}`;
     const eventSource = new EventSource(sseUrl);
 
     eventSource.addEventListener('CONNECTED', () => {

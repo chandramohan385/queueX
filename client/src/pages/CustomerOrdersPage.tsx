@@ -108,7 +108,8 @@ export const CustomerOrdersPage: React.FC = () => {
       return;
     }
 
-    const sseUrl = `/api/events/customer/${encodeURIComponent(savedPhone.trim())}`;
+    const backendBase = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace(/\/$/, '') : '';
+    const sseUrl = `${backendBase}/api/events/customer/${encodeURIComponent(savedPhone.trim())}`;
     const eventSource = new EventSource(sseUrl);
 
     eventSource.addEventListener('CONNECTED', () => {
