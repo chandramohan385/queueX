@@ -27,10 +27,24 @@ export const CustomerOrderPage: React.FC = () => {
       try {
         setLoading(true);
         const data = await getServices();
-        setServices(data);
-        if (data.length > 0) {
-          setSelectedItems({ [data[0].id]: 10 });
-        }
+        
+        // Priority sort: Regular services first (PRINTING -> FINISHING -> PHOTO -> CARD_PRINT)
+        const categoryPriority: Record<string, number> = {
+          PRINTING: 1,
+          FINISHING: 2,
+          PHOTO: 3,
+          CARD_PRINT: 4,
+        };
+        const sorted = [...data].sort((a, b) => {
+          const catA = categoryPriority[a.category] || 99;
+          const catB = categoryPriority[b.category] || 99;
+          if (catA !== catB) return catA - catB;
+          return Number(a.base_price) - Number(b.base_price);
+        });
+
+        setServices(sorted);
+        // Default all quantities to 0
+        setSelectedItems({});
       } catch (err: any) {
         setError(err.message || 'Failed to load services catalog');
       } finally {
@@ -73,7 +87,13 @@ export const CustomerOrderPage: React.FC = () => {
     return sum + parseFloat(String(service.base_price)) * qty;
   }, 0);
 
-  const categories = ['ALL', ...Array.from(new Set(services.map((s) => s.category)))];
+  const categoryOrder = ['ALL', 'PRINTING', 'FINISHING', 'PHOTO', 'CARD_PRINT'];
+  const rawCategories = Array.from(new Set(services.map((s) => s.category)));
+  const categories = [
+    'ALL',
+    ...categoryOrder.filter((c) => c !== 'ALL' && rawCategories.includes(c)),
+    ...rawCategories.filter((c) => !categoryOrder.includes(c)),
+  ];
   const filteredServices =
     categoryFilter === 'ALL' ? services : services.filter((s) => s.category === categoryFilter);
 

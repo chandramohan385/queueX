@@ -1,4 +1,4 @@
-﻿import { Router, Request, Response } from 'express';
+import { Router, Request, Response } from 'express';
 import pool from '../db/index';
 
 const router = Router();
@@ -9,9 +9,21 @@ const router = Router();
  */
 router.get('/', async (req: Request, res: Response): Promise<void> => {
   try {
-    const result = await pool.query(
-      'SELECT id, name, category, description, base_price, unit FROM services WHERE is_active = true ORDER BY category, id ASC'
-    );
+    const result = await pool.query(`
+      SELECT id, name, category, description, base_price, unit 
+      FROM services 
+      WHERE is_active = true 
+      ORDER BY 
+        CASE category 
+          WHEN 'PRINTING' THEN 1 
+          WHEN 'FINISHING' THEN 2 
+          WHEN 'PHOTO' THEN 3 
+          WHEN 'CARD_PRINT' THEN 4 
+          ELSE 5 
+        END ASC, 
+        base_price ASC, 
+        id ASC
+    `);
 
     res.status(200).json({
       success: true,
